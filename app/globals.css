@@ -131,6 +131,41 @@ body {
   }
 }
 
+/* Transisi antar soal (Modul 5) — maju vs mundur arah berbeda */
+@keyframes quiz-in {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes quiz-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Keterangan tambahan opsi muncul saat dipilih */
+@keyframes detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .reveal-up {
     opacity: 0;
@@ -153,6 +188,18 @@ body {
   .progress-fill {
     transform-origin: left;
     animation: progress-fill 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  }
+
+  .quiz-in {
+    animation: quiz-in 0.32s ease-out both;
+  }
+
+  .quiz-in-back {
+    animation: quiz-in-back 0.32s ease-out both;
+  }
+
+  .detail-in {
+    animation: detail-in 0.25s ease-out both;
   }
 }
 

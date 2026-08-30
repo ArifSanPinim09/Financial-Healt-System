@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import IdentityForm, { type Identity } from "./identity-form";
+import QuizEngine from "./quiz-engine";
 
 type QuizFlowProps = {
   type: "RATING" | "NEEDS";
@@ -217,12 +218,21 @@ export default function QuizFlow({
         <StepProgress step={inQuiz ? 2 : 1} questionCount={questionCount} />
         <div className="pt-6 sm:pt-8">
           {inQuiz && identity ? (
-            <QuizReadyState
-              identity={identity}
-              title={title}
-              questionCount={questionCount}
-              onEdit={resetIdentity}
-            />
+            type === "RATING" ? (
+              <QuizEngine
+                type={type}
+                identity={identity}
+                resultPath={resultPath}
+              />
+            ) : (
+              // Engine pertanyaan NEEDS disambungkan di Modul 9.
+              <QuizReadyState
+                identity={identity}
+                title={title}
+                questionCount={questionCount}
+                onEdit={resetIdentity}
+              />
+            )
           ) : (
             <IdentityForm
               assessmentType={type}

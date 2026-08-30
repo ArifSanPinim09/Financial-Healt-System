@@ -8,7 +8,7 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | Project & Supabase Setup | 🟢 | 2026-08-30 |
 | Landing Page | 🟢 | 2026-08-30 |
 | Identity Capture & Pembatasan 1x | 🟢 | 2026-08-30 |
-| Financial Rating Quiz + Scoring + KSM Gate | 🟡 | 2026-08-30 |
+| Financial Rating Quiz + Scoring + KSM Gate | 🟢 | 2026-08-30 |
 | Financial Rating Result Page | 🔴 | - |
 | Financial Needs Quiz + Scoring + Tie-Breaker | 🔴 | - |
 | Financial Needs Result Page | 🔴 | - |
@@ -61,3 +61,19 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - ⚠️ Temuan: 1 baris test "Tes Modul 4" (6281200001111, RATING) dari sesi sebelumnya masih ada di tabel `submission` — keputusan user: hapus atau pertahankan sebagai sample data admin.
 - Referensi PRD: Bab F13, F14, 11, 16.2, 22, 23, 26 (AC11, AC12)
 - Commit: a83740b
+
+### [2026-08-30] Modul 5 (Financial Rating Quiz Engine) — SELESAI
+- `app/quiz/quiz-engine.tsx` (F2, reusable untuk NEEDS di Modul 9): 1 pertanyaan per layar (Bab 16.2), progress bar atas (`role=progressbar` + "Soal X dari 14"), eyebrow dimensi per soal (Cash Flow, dst.; Q13 "Tujuan Finansial", Q14 "Kebutuhan Finansial"), option card gaya radio dengan letter badge A–E + check, **keterangan tambahan** opsi muncul inline saat dipilih (Bab 17, animasi `detail-in`), tombol "Lanjut" eksplisit & disabled sampai memilih (Bab 17 — bukan auto-advance), tombol "Kembali" (jawaban lama tetap tersimpan, bisa diubah), transisi antar-soal slide maju/mundur beda arah (`quiz-in`/`quiz-in-back`, hormat `prefers-reduced-motion`), skor opsi tidak pernah tampil (F2).
+- Persist jawaban + posisi soal di **sessionStorage** per jenis assessment (Bab 11): refresh di tengah kuis kembali ke soal yang sama dengan jawaban utuh — diverifikasi di browser.
+- UX loading/error (Bab 16.2, 11): skeleton saat pertanyaan dimuat; error load = kartu "Sepertinya ada gangguan" + tombol "Muat ulang"; error submit = banner ramah + retry, jawaban tidak hilang; double-click submit dicegah (tombol disabled + state "Menyiapkan hasil…").
+- A11y (Bab 21): radio asli (`<input type=radio>` + `fieldset`/`legend` sr-only) → navigasi keyboard native, tap target ≥44px, body ≥16px, error pakai icon+teks.
+- Mobile (Bab 19): full-screen per soal, **tombol sticky di bawah layar** (bar fixed + safe-area inset), desktop tombol inline.
+- `GET /api/questions?type=` (Bab 22, publik): 14 RATING / 10 NEEDS, **skor tidak dikirim ke client** (F2 + anti-manipulasi Bab 23), 400 untuk type tidak dikenal. Pakai anon key (data memang read-only publik sesuai RLS).
+- `POST /api/submissions` (Bab 22, AC10, Bab 23) — ditambahkan di modul ini agar kuis RATING bisa selesai end-to-end (engine scoring sudah ada sejak Modul 1): validasi lengkap di server (nama, no HP, semua 14 `question_id`+`option_id` valid & tidak duplikat; jawaban kurang → 400 `INCOMPLETE_ANSWERS` + daftar soal terlewat → client arahkan ke soal tersebut = AC10), **skor dihitung ulang dari DB** berdasarkan `option_id` (nilai client tidak dipercaya), insert `submission` + `submission_answer` + `dimension_result` via service role (Bab 22, snapshot audit Bab 12.5/F4), **idempoten** (nomor yang sudah submit dikembalikan submission lamanya; unique-violation race → 23505 ditangani), rate limit 10x/jam per nomor HP (Bab 23, in-memory skala demo). NEEDS → 501 (engine scoring-nya Modul 10).
+- Q13/Q14 (F3): `is_scoring=false` dari DB, non-scoring — disimpan sebagai `financial_goal`/`financial_need` (teks opsi; PRD "enum A–H" vs contoh AC5 "Punya rumah" → dipilih teks untuk keperluan copy personalisasi).
+- Assumption (dicatat, belum didefinisi PRD): `recommendation_confidence` untuk RATING = `STRONG` jika KSM Gate PASS, `MODERATE` jika FAIL.
+- Alur akhir: submit sukses → state "Selesai, {nama}!" + CTA "Lihat hasil kamu" → `/financial-health/result?id=<id>` (halaman itu sendiri masih 404 — Modul 8). Flag `fw-submitted-<type>` di sessionStorage: refresh/open ulang halaman kuis setelah submit → langsung state selesai (kuis tidak bisa diulang, konsisten F14).
+- `quiz-flow.tsx`: RATING kini merender engine sungguhan; NEEDS masih placeholder (disambungkan Modul 9).
+- Verifikasi: 17 unit test ✓, typecheck ✓, lint ✓ (0 error, 1 warning generated file), build ✓. API live: submit lengkap → 201 + finalScore 82 = persis kalkulasi independen (CF 100, Debt 77.5, EF 67.5, Saving 72.5, Invest 90, Protection 82.5 → KSM Gate PASS, persona THE_BUILDER, readiness HIGH, confidence STRONG, goal/need tersimpan benar); AC10 → 400 + missing 11 id benar; opsi invalid → 400; NEEDS → 501; idempoten → id sama + `alreadyExists`; rate limit → 429 setelah 10 percobaan/jam. Browser desktop: identitas → Q1 (detail opsi B muncul, Lanjut aktif), Lanjut→Q2, Kembali→Q1 (jawaban B utuh), refresh di Q2 (restore soal+jawaban), 14 soal selesai → submit → "Selesai, Budi!" → CTA ke result?id= benar (404 = Modul 8), refresh → tetap state selesai. Browser mobile 390px: layout full-screen, sticky bar Lanjut di bawah, tap target besar. Data test semua di-cleanup dari DB.
+- Referensi PRD: Bab F2, F3, F4, F5, 11, 16.2, 17, 19, 20, 21, 22, 23, 26 (AC10)
+- Commit: <hash>

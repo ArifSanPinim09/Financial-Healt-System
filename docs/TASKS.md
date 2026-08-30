@@ -42,15 +42,15 @@
 - [x] Jika sudah ada → redirect ke halaman hasil lama (skip quiz) (ref: PRD Bab F14)
 
 ## Modul 5: Financial Rating Quiz Engine (F2, F3)
-- [ ] Buat halaman quiz `/financial-health/quiz` (ref: PRD Bab 14, 16.2)
-- [ ] Komponen progress bar (ref: PRD Bab 16.2)
-- [ ] Komponen option card (radio-button style) (ref: PRD Bab 16.2)
-- [ ] Load pertanyaan dari API `/api/questions?type=RATING` (ref: PRD Bab 22)
-- [ ] Tampilkan 1 pertanyaan per layar (ref: PRD Bab 16.2)
-- [ ] Simpan jawaban di client state (local storage untuk refresh resilience) (ref: PRD Bab 11)
-- [ ] Tombol "Lanjut" aktif setelah pilih opsi (ref: PRD Bab 16.2)
-- [ ] Tombol "Kembali" untuk ubah jawaban sebelumnya (ref: PRD Bab 17)
-- [ ] Q13 (Financial Goal) & Q14 (Financial Need) non-scoring (ref: PRD Bab F3, 8.1)
+- [x] Buat halaman quiz `/financial-health/quiz` (ref: PRD Bab 14, 16.2)
+- [x] Komponen progress bar (ref: PRD Bab 16.2)
+- [x] Komponen option card (radio-button style) (ref: PRD Bab 16.2)
+- [x] Load pertanyaan dari API `/api/questions?type=RATING` (ref: PRD Bab 22)
+- [x] Tampilkan 1 pertanyaan per layar (ref: PRD Bab 16.2)
+- [x] Simpan jawaban di client state (local storage untuk refresh resilience) (ref: PRD Bab 11)
+- [x] Tombol "Lanjut" aktif setelah pilih opsi (ref: PRD Bab 16.2)
+- [x] Tombol "Kembali" untuk ubah jawaban sebelumnya (ref: PRD Bab 17)
+- [x] Q13 (Financial Goal) & Q14 (Financial Need) non-scoring (ref: PRD Bab F3, 8.1)
 
 ## Modul 6: Scoring & Persona Engine (F4)
 - [ ] Implementasi perhitungan dimension raw score (rata-rata 2 soal) (ref: PRD Bab 8.1)
@@ -183,4 +183,4 @@ Modul 1 (Setup) → Modul 2 (Supabase) → Modul 3 (Landing)
 
 ---
 
-*Terakhir diupdate: 2026-08-30 (Modul 4 selesai)*
+*Terakhir diupdate: 2026-08-30 (Modul 5 selesai)*
