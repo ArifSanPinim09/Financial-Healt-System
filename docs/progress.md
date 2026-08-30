@@ -20,6 +20,16 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-30] Modul 7 (KSM Gate & Recommendation Engine) — SELESAI
+- KSM Gate & Recommendation Engine (F5) lengkap di `lib/scoring/recommendation.ts` (sudah diimplementasikan sejak Modul 1, diverifikasi & ditandai selesai di modul ini).
+- `evaluateKsmGate` (Bab 8.2): PASS hanya jika SEMUA — Final Score ≥70 AND Cash Flow ≥60 AND Debt Management ≥60 AND Emergency Fund ≥40. Salah satu gagal → FAIL walau Final Score tinggi.
+- `buildRatingRecommendation` (Bab 8.3): Path A (KSM Gate PASS → KSM Opportunity), Path B (EF <60 atau Saving <60 → CASA/Saving, prioritas EF bila keduanya), Path C (Cash Flow <60 → Livin'), Path D (Debt <60 → Debt Management Advice + secondary Livin'), Path E (≥2 dimensi <40 → Financial Advice, jangan push produk spesifik).
+- Priority Rule (Bab 8.3): urutan Debt Management → Cash Flow → Emergency Fund → Saving → Financial Protection → Investment untuk dimensi <40 (di-track via `dimensionsBelow40` + `weakestDimension`); KSM Gate selalu dicek terpisah lebih dulu.
+- Unit test AC3, AC4, AC5 (Bab 26) di `rating.test.ts`: AC3 — final 78/CF 85/Debt 75/EF 50 → `ksm_gate=true`, primary=KSM ✓; AC4 — final 74 tapi Debt 32 → FAIL, primary=DEBT_ADVICE + secondary LIVIN ✓; AC5 — final 52 + goal "Punya rumah" → readiness LOW, tidak KSM (goal tidak override) ✓. Plus Path B/C/E test.
+- Verifikasi: 17 unit test ✓, typecheck ✓, lint ✓ (0 error, 1 warning generated file), build ✓.
+- Referensi PRD: Bab F5, 8.2, 8.3, 8.4, 26 (AC3, AC4, AC5)
+- Commit: <hash>
+
 ### [2026-08-30] Modul 6 (Scoring & Persona Engine) — SELESAI
 - Engine scoring Financial Rating (F4) lengkap di `lib/scoring/` (sudah diimplementasikan sejak Modul 1, diverifikasi & ditandai selesai di modul ini).
 - `constants.ts` (Bab 8.1): 6 dimensi berbobot (Cash Flow 25%, Debt Management 20%, Emergency Fund 20%, Saving Habit 15%, Investment Habit 10%, Financial Protection 10%), mapping question_id Q1-Q12 per dimensi, type DimensionStatus/Persona/Readiness/DimensionResult/RatingScoreResult.

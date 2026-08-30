@@ -63,12 +63,12 @@
 - [x] Unit test untuk AC2 (persona THE BUILDER untuk skor 74) (ref: PRD Bab 26)
 
 ## Modul 7: KSM Gate & Recommendation Engine (F5)
-- [ ] Implementasi KSM Gate: Final Score ≥70 AND Cash Flow ≥60 AND Debt ≥60 AND Emergency Fund ≥40 (ref: PRD Bab 8.2)
-- [ ] Implementasi recommendation path A-E (ref: PRD Bab 8.3)
-- [ ] Implementasi priority rule untuk multi-issue (ref: PRD Bab 8.3)
-- [ ] Unit test untuk AC3 (KSM Gate PASS) (ref: PRD Bab 26)
-- [ ] Unit test untuk AC4 (KSM Gate FAIL walau skor tinggi) (ref: PRD Bab 26)
-- [ ] Unit test untuk AC5 (Goal tidak override Readiness) (ref: PRD Bab 26)
+- [x] Implementasi KSM Gate: Final Score ≥70 AND Cash Flow ≥60 AND Debt ≥60 AND Emergency Fund ≥40 (ref: PRD Bab 8.2)
+- [x] Implementasi recommendation path A-E (ref: PRD Bab 8.3)
+- [x] Implementasi priority rule untuk multi-issue (ref: PRD Bab 8.3)
+- [x] Unit test untuk AC3 (KSM Gate PASS) (ref: PRD Bab 26)
+- [x] Unit test untuk AC4 (KSM Gate FAIL walau skor tinggi) (ref: PRD Bab 26)
+- [x] Unit test untuk AC5 (Goal tidak override Readiness) (ref: PRD Bab 26)
 
 ## Modul 8: Financial Rating Result Page + Loading (F6, F12)
 - [ ] Implementasi loading experience bertahap (ref: PRD Bab F12)
@@ -183,4 +183,4 @@ Modul 1 (Setup) → Modul 2 (Supabase) → Modul 3 (Landing)
 
 ---
 
-*Terakhir diupdate: 2026-08-30 (Modul 6 selesai)*
+*Terakhir diupdate: 2026-08-30 (Modul 7 selesai)*
