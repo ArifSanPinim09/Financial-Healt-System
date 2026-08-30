@@ -28,7 +28,7 @@ Format entry:
 - File terdampak: .env.example, lib/supabase/database.types.ts, docs/TASKS.md, docs/progress.md
 
 ## [2026-08-30 23:05] Modul 3 (Landing Page) — SELESAI
-- Commit: <hash>
+- Commit: 6a76c99
 - Deskripsi: Landing page `/` (static, prerendered) sesuai F1/Bab 16.1: header wordmark "Livin'" + badge Demo, hero (heading serif line-mask reveal, copy hangat "bukan ujian", trust signals), 2 kartu assessment setara (Financial Health Score → /financial-health/quiz, Kebutuhan Kredit → /financial-needs/quiz) dengan icon + judul + deskripsi + CTA, footer dark + disclaimer business case. Design system Bab 20: palet 2 warna (warm paper + teal dalam), Fraunces (display) + Geist (body), Lucide Icons tanpa emoji, radius & shadow konsisten. Animasi CSS murni hormat prefers-reduced-motion: staggered rise-in per section, line-mask reveal heading, ambient glow drift, hover kartu (lift + icon tilt + arrow slide). A11y Bab 21: kontras WCAG AA, body ≥16px, tap target besar, focus-visible outline. Verifikasi: typecheck ✓, lint ✓, build static ✓, screenshot desktop+mobile ✓.
 - File terdampak: app/page.tsx, app/layout.tsx, app/globals.css, docs/TASKS.md, docs/progress.md
 

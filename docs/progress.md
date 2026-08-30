@@ -45,4 +45,4 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - Sesuai F1/16.1: 2 kartu setara (tidak ada yang didahulukan), mobile = stack vertikal / desktop = berdampingan max-width + stagger offset, kartu = icon + judul + deskripsi 1 kalimat + CTA, tap target besar (seluruh kartu clickable). A11y: kontras WCAG AA, body ≥16px (Bab 21), focus-visible outline.
 - Verifikasi: typecheck ✓, lint ✓ (0 error), build ✓ (static), screenshot desktop (1440px) + mobile (390px) diverifikasi visual.
 - Referensi PRD: Bab F1, 16.1, 15, 19, 20, 21, 24
-- Commit: <hash>
+- Commit: 6a76c99
