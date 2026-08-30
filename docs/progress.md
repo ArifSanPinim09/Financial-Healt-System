@@ -7,7 +7,7 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 |---|---|---|
 | Project & Supabase Setup | 🟢 | 2026-08-30 |
 | Landing Page | 🟢 | 2026-08-30 |
-| Identity Capture & Pembatasan 1x | 🔴 | - |
+| Identity Capture & Pembatasan 1x | 🟢 | 2026-08-30 |
 | Financial Rating Quiz + Scoring + KSM Gate | 🟡 | 2026-08-30 |
 | Financial Rating Result Page | 🔴 | - |
 | Financial Needs Quiz + Scoring + Tie-Breaker | 🔴 | - |
@@ -46,3 +46,18 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - Verifikasi: typecheck ✓, lint ✓ (0 error), build ✓ (static), screenshot desktop (1440px) + mobile (390px) diverifikasi visual.
 - Referensi PRD: Bab F1, 16.1, 15, 19, 20, 21, 24
 - Commit: 6a76c99
+
+### [2026-08-30] Modul 4 (Identity Capture + Pembatasan 1x Isi) — SELESAI
+- `lib/utils/phone.ts` (F13): normalisasi + validasi nomor HP Indonesia — `08xx` / `+62 8xx` / `628xx` (spasi, strip, tanda kurung, titik diabaikan) → bentuk kanonik `62xxxxxxxxxx` sebagai identifier unik F14. 7 unit test (format valid, batas panjang, prefix salah, konsisten antar-format).
+- `POST /api/submission-check` (F14, Bab 22/23): cek `(customer_phone, assessment_type)` via **service-role client di server** (RLS melarang read publik ke `submission`), hanya mengembalikan `submission_id` sendiri — tanpa data sensitif. Exclude soft-deleted (`deleted_at IS NULL`), ambil `submitted_at` terbaru jika >1 (race condition). Validasi ulang di server (nomor dinormalisasi ulang, type whitelist RATING/NEEDS).
+- Form identitas (F13, AC11): nama + no HP **di awal quiz**, validasi ramah dengan contoh format, animasi shake saat invalid (icon + teks, bukan cuma warna — Bab 21), state loading "Memeriksa data…", state error gangguan + tombol retry.
+- F14 (AC12): nomor sudah pernah submit **jenis yang sama** → state "Kamu sudah pernah mengisi ini" + tombol "Lihat hasil kamu" + auto-redirect 2.5 dtk ke `/…/result?id=<submission_id lama>` (skip quiz sepenuhnya). Per jenis assessment: 1 nomor boleh RATING 1x + NEEDS 1x.
+- `quiz-flow.tsx` (reusable RATING & NEEDS): phase identitas → quiz (area quiz = placeholder, engine pertanyaan milik Modul 5/9), step progress 2 langkah (bar terisi animasi progress-fill). Identitas persist **sessionStorage via `useSyncExternalStore`** — aman SSR (server snapshot null), refresh tidak mengulang identitas, fallback in-memory saat sessionStorage terblokir (private mode).
+- `globals.css`: token warna error (`error` `#b3402a`, `error-deep`, `error-tint`, `error-line`) + keyframes `shake` & `progress-fill` (hormat `prefers-reduced-motion`).
+- Fix lint error React-compiler rule `set-state-in-effect`: refactor `useEffect+setState` mount-read jadi `useSyncExternalStore` (pola idiomatic React 19, sekaligus menghapus skeleton buatan & render-pass ekstra). Bonus: import unused di `rating.test.ts` dibersihkan.
+- Verifikasi: 17 unit test ✓ (10 scoring + 7 phone), typecheck ✓, lint ✓ (0 error, 1 warning di generated file `database.types.ts`), build ✓ (quiz pages static, API dynamic).
+- Uji API live: phone baru → `found:false`; format `08xx` & `628xx` dinormalisasi ke identifier sama; 400 `INVALID_PHONE` / `INVALID_INPUT` / `INVALID_JSON` sesuai kontrak Bab 22; phone seeded → `found:true` + `submissionId` benar; NEEDS dgn nomor yg sudah punya RATING → `found:false` (per jenis ✓).
+- Uji alur browser (dev server): (1) AC11 — form identitas tampil duluan, submit kosong → error nama+no HP, no HP salah format → error contoh, sukses → quiz-ready "Halo, {nama}!"; (2) refresh → tetap quiz-ready (identitas tidak diulang), tanpa hydration error; (3) tombol "Ubah" → balik ke form identitas; (4) F14 — phone seeded → "Kamu sudah pernah mengisi ini" → auto-redirect ke `/financial-health/result?id=<id lama>` (target 404 karena halaman hasil masih Modul 8/11 — sesuai dependency graph); (5) NEEDS dgn nomor sama → lanjut quiz (bukan redirect) ✓. Data seed test dihapus setelah uji.
+- ⚠️ Temuan: 1 baris test "Tes Modul 4" (6281200001111, RATING) dari sesi sebelumnya masih ada di tabel `submission` — keputusan user: hapus atau pertahankan sebagai sample data admin.
+- Referensi PRD: Bab F13, F14, 11, 16.2, 22, 23, 26 (AC11, AC12)
+- Commit: <hash>

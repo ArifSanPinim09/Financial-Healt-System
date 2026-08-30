@@ -36,10 +36,10 @@
 - [x] Kartu: icon + judul + deskripsi + CTA (ref: PRD Bab 16.1)
 
 ## Modul 4: Identity Capture + Pembatasan 1x Isi (F13, F14)
-- [ ] Buat form identitas (nama, nomor HP) di awal quiz (ref: PRD Bab F13, 16.2)
-- [ ] Validasi format nomor HP Indonesia (ref: PRD Bab F13)
-- [ ] Cek existing submission berdasarkan (customer_phone, assessment_type) (ref: PRD Bab F14)
-- [ ] Jika sudah ada → redirect ke halaman hasil lama (skip quiz) (ref: PRD Bab F14)
+- [x] Buat form identitas (nama, nomor HP) di awal quiz (ref: PRD Bab F13, 16.2)
+- [x] Validasi format nomor HP Indonesia (ref: PRD Bab F13)
+- [x] Cek existing submission berdasarkan (customer_phone, assessment_type) (ref: PRD Bab F14)
+- [x] Jika sudah ada → redirect ke halaman hasil lama (skip quiz) (ref: PRD Bab F14)
 
 ## Modul 5: Financial Rating Quiz Engine (F2, F3)
 - [ ] Buat halaman quiz `/financial-health/quiz` (ref: PRD Bab 14, 16.2)
@@ -183,4 +183,4 @@ Modul 1 (Setup) → Modul 2 (Supabase) → Modul 3 (Landing)
 
 ---
 
-*Terakhir diupdate: [akan diisi saat mulai development]*
+*Terakhir diupdate: 2026-08-30 (Modul 4 selesai)*

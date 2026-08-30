@@ -5,10 +5,7 @@ import {
   classifyPersona,
   classifyReadiness,
 } from "./rating";
-import {
-  buildRatingRecommendation,
-  evaluateKsmGate,
-} from "./recommendation";
+import { buildRatingRecommendation } from "./recommendation";
 
 describe("Financial Rating Scoring (PRD Bab 8)", () => {
   it("AC1 — perhitungan final score 77.75 dibulatkan 78", () => {
