@@ -12,6 +12,11 @@ Format entry:
 
 ---
 
+## [2026-08-31 03:10] Modul 9 (Needs Quiz) + Modul 10 (Scoring & Tie-Breaker) + Modul 11 (Needs Result) — SELESAI
+- Commit: a91b1b9
+- Deskripsi: Financial Needs Assessment tuntas end-to-end. Engine scoring (F8, Bab 8.5) di lib/scoring/needs.ts: raw sum KSM/KPR/KKB tanpa bobot, threshold selisih (≥5 Strong, 3-4 Recommendation, 1-2 Dual), tie-breaker berurutan Actual Need (Q7) → Urgency (Q9) → Asset Gap (Q3/Q5) → Life Stage (Q1), No Strong Recommendation utk skor berdekatan/berimbang. Fix bug ranking: comparator akses key uppercase (NaN) → lowercase. 14 unit test (AC6/AC7/AC8 + boundary + tie-breaker cascade), total 31 pass. Backend: POST /api/submissions dukung NEEDS (validasi penuh, skor ulang dari DB, insert + submission_answer, idempoten F14), GET /api/result dukung NEEDS (assessment_type-aware). Frontend: QuizEngine dipakai kedua assessment (eyebrow "Kebutuhan Kredit", tombol "Lihat rekomendasi"), result page /financial-needs/result (F12 loading, single/dual card, score bar KSM/KPR/KKB, CTA WA round-robin). Diverifikasi live: KPR STRONG 13/35/17, DUAL KSM+KKB 18/13/17, idempoten, F14, INCOMPLETE/INVALID, regresi RATING aman; data uji dibersihkan. Catatan: get_next_cs() DB masih rusak (42702) — endpoint sudah bypass.
+- File terdampak: lib/scoring/needs.ts, lib/scoring/needs.test.ts, app/api/submissions/route.ts, app/api/result/route.ts, app/quiz/quiz-engine.tsx, app/quiz/quiz-flow.tsx, app/financial-needs/result/, docs/TASKS.md, docs/progress.md
+
 ## [2026-08-30 20:45] Setup awal: AGENTS.md, progress.md, task planning
 - Commit: 29af3db
 - Deskripsi: Commit pertama project. Menetapkan konvensi (docs/, AGENTS.md), membuat planning task granular (TASKS.md, 116 task / 17 modul), template progress, dan memory log. Menyesuaikan AGENTS.md lama (808 baris template generik) menjadi versi ringkas berisi business rules kunci PRD.
