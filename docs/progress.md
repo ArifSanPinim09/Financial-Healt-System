@@ -60,4 +60,4 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - Uji alur browser (dev server): (1) AC11 — form identitas tampil duluan, submit kosong → error nama+no HP, no HP salah format → error contoh, sukses → quiz-ready "Halo, {nama}!"; (2) refresh → tetap quiz-ready (identitas tidak diulang), tanpa hydration error; (3) tombol "Ubah" → balik ke form identitas; (4) F14 — phone seeded → "Kamu sudah pernah mengisi ini" → auto-redirect ke `/financial-health/result?id=<id lama>` (target 404 karena halaman hasil masih Modul 8/11 — sesuai dependency graph); (5) NEEDS dgn nomor sama → lanjut quiz (bukan redirect) ✓. Data seed test dihapus setelah uji.
 - ⚠️ Temuan: 1 baris test "Tes Modul 4" (6281200001111, RATING) dari sesi sebelumnya masih ada di tabel `submission` — keputusan user: hapus atau pertahankan sebagai sample data admin.
 - Referensi PRD: Bab F13, F14, 11, 16.2, 22, 23, 26 (AC11, AC12)
-- Commit: <hash>
+- Commit: a83740b
