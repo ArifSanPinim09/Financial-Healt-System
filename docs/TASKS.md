@@ -82,25 +82,25 @@
 - [x] CTA buka WhatsApp CS round-robin (ref: PRD Bab F6, 8.6)
 
 ## Modul 9: Financial Needs Quiz Engine (F7)
-- [ ] Buat halaman quiz `/financial-needs/quiz` (ref: PRD Bab 14, 16.2)
-- [ ] Load pertanyaan dari API `/api/questions?type=NEEDS` (ref: PRD Bab 22)
-- [ ] Setiap opsi menambah skor ke 3 kategori (KSM/KPR/KKB) (ref: PRD Bab F7, 8.5)
-- [ ] Simpan jawaban di client state (ref: PRD Bab 11)
+- [x] Buat halaman quiz `/financial-needs/quiz` (ref: PRD Bab 14, 16.2)
+- [x] Load pertanyaan dari API `/api/questions?type=NEEDS` (ref: PRD Bab 22)
+- [x] Setiap opsi menambah skor ke 3 kategori (KSM/KPR/KKB) (ref: PRD Bab F7, 8.5)
+- [x] Simpan jawaban di client state (ref: PRD Bab 11)
 
 ## Modul 10: KSM/KPR/KKB Scoring & Tie-Breaker Engine (F8)
-- [ ] Implementasi raw sum skor KSM/KPR/KKB (ref: PRD Bab 8.5)
-- [ ] Implementasi threshold: selisih ≥5 → Strong, 3-4 → Recommendation, 1-2 → Dual (ref: PRD Bab 8.5)
-- [ ] Implementasi tie-breaker berurutan: Actual Need → Urgency → Asset Gap → Life Stage (ref: PRD Bab 8.5)
-- [ ] Implementasi "No Strong Recommendation" untuk skor berdekatan (ref: PRD Bab 8.5)
-- [ ] Unit test untuk AC6 (Strong Recommendation) (ref: PRD Bab 26)
-- [ ] Unit test untuk AC7 (Tie-Breaker by Actual Need) (ref: PRD Bab 26)
-- [ ] Unit test untuk AC8 (No Strong Recommendation) (ref: PRD Bab 26)
+- [x] Implementasi raw sum skor KSM/KPR/KKB (ref: PRD Bab 8.5)
+- [x] Implementasi threshold: selisih ≥5 → Strong, 3-4 → Recommendation, 1-2 → Dual (ref: PRD Bab 8.5)
+- [x] Implementasi tie-breaker berurutan: Actual Need → Urgency → Asset Gap → Life Stage (ref: PRD Bab 8.5)
+- [x] Implementasi "No Strong Recommendation" untuk skor berdekatan (ref: PRD Bab 8.5)
+- [x] Unit test untuk AC6 (Strong Recommendation) (ref: PRD Bab 26)
+- [x] Unit test untuk AC7 (Tie-Breaker by Actual Need) (ref: PRD Bab 26)
+- [x] Unit test untuk AC8 (No Strong Recommendation) (ref: PRD Bab 26)
 
 ## Modul 11: Financial Needs Result Page (F9)
-- [ ] Buat halaman hasil `/financial-needs/result` (ref: PRD Bab 16.4)
-- [ ] Tampilkan single recommendation card (ref: PRD Bab 16.4)
-- [ ] Tampilkan dual recommendation cards dengan copy "kebutuhan berimbang" (ref: PRD Bab 16.4)
-- [ ] CTA buka WhatsApp CS round-robin (ref: PRD Bab F9, 8.6)
+- [x] Buat halaman hasil `/financial-needs/result` (ref: PRD Bab 16.4)
+- [x] Tampilkan single recommendation card (ref: PRD Bab 16.4)
+- [x] Tampilkan dual recommendation cards dengan copy "kebutuhan berimbang" (ref: PRD Bab 16.4)
+- [x] CTA buka WhatsApp CS round-robin (ref: PRD Bab F9, 8.6)
 
 ## Modul 12: CTA WhatsApp Round-Robin
 - [x] Implementasi endpoint untuk increment counter & ambil nomor CS (ref: PRD Bab 12.7)
@@ -183,4 +183,4 @@ Modul 1 (Setup) → Modul 2 (Supabase) → Modul 3 (Landing)
 
 ---
 
-*Terakhir diupdate: 2026-08-30 (Modul 8 + 12 selesai)*
+*Terakhir diupdate: 2026-08-30 (Modul 9, 10, 11 selesai)*

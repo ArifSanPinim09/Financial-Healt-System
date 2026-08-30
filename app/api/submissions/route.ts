@@ -7,6 +7,11 @@ import {
   type DimensionKey,
   type RatingScoreResult,
 } from "@/lib/scoring/constants";
+import {
+  buildNeedsRecommendation,
+  sumNeedsScores,
+  type NeedsRecommendation,
+} from "@/lib/scoring/needs";
 import { normalizeIndonesianPhone } from "@/lib/utils/phone";
 
 // POST /api/submissions — Bab 22 (publik), AC10, Bab 23.
@@ -18,7 +23,11 @@ import { normalizeIndonesianPhone } from "@/lib/utils/phone";
 //     role key (Bab 22), termasuk snapshot perhitungan (audit, Bab 12.5/F4).
 //  4. Idempoten: nomor yang sudah pernah submit RATING dikembalikan
 //     submission lamanya (edge case double-submit, Bab 11).
-// NEEDS: engine scoring-nya bagian dari Modul 10 — sementara 501.
+// Alur NEEDS (F7/F8):
+//  1-2. Sama — skor KSM/KPR/KKB dihitung ulang dari DB (score_ksm/kpr/kkb).
+//  3. Insert submission + submission_answer, simpan skor kategori + hasil
+//     rekomendasi (Bab 12.3, 8.5) — tanpa dimension_result.
+//  4. Idempoten per (customer_phone, assessment_type) (F14).
 
 type AnswerInput = { questionId?: unknown; optionId?: unknown };
 
@@ -39,6 +48,16 @@ type SubmissionResultPayload = {
     contribution: number;
     status: string;
   }[];
+};
+
+/** Snapshot hasil NEEDS (F9/Bab 16.4) — disimpan di submission + dikirim ke client. */
+type NeedsResultPayload = {
+  primaryRecommendation: string;
+  secondaryRecommendation: string | null;
+  recommendationConfidence: string;
+  ksmScore: number;
+  kprScore: number;
+  kkbScore: number;
 };
 
 // Rate limiting sederhana per nomor HP (Bab 23) — in-memory, cukup untuk
@@ -109,21 +128,6 @@ export async function POST(request: Request) {
     answers?: unknown;
   };
 
-  if (assessmentType === "NEEDS") {
-    return errorResponse(
-      501,
-      "NOT_IMPLEMENTED",
-      "Assessment Kebutuhan Kredit sedang kami siapkan. Nanti ya!",
-    );
-  }
-  if (assessmentType !== "RATING") {
-    return errorResponse(
-      400,
-      "INVALID_INPUT",
-      "Jenis assessment tidak dikenal.",
-    );
-  }
-
   const trimmedName = typeof name === "string" ? name.trim() : "";
   if (trimmedName.length < 2) {
     return errorResponse(
@@ -148,6 +152,17 @@ export async function POST(request: Request) {
       429,
       "RATE_LIMITED",
       "Terlalu banyak percobaan. Beri jeda sebentar, lalu coba lagi ya.",
+    );
+  }
+
+  if (assessmentType === "NEEDS") {
+    return handleNeedsSubmission(answers, trimmedName, normalizedPhone);
+  }
+  if (assessmentType !== "RATING") {
+    return errorResponse(
+      400,
+      "INVALID_INPUT",
+      "Jenis assessment tidak dikenal.",
     );
   }
 
@@ -349,6 +364,248 @@ export async function POST(request: Request) {
     },
     { status: 201 },
   );
+}
+
+// ---------------------------------------------------------------------------
+// NEEDS (F7/F8) — skor KSM/KPR/KKB dihitung ulang dari DB, lalu simpan
+// submission + submission_answer + snapshot rekomendasi (Bab 8.5, 12.3).
+// ---------------------------------------------------------------------------
+
+function needsAnswerMap(
+  picked: Map<string, string>,
+): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const [questionId, optionId] of picked) map[questionId] = optionId;
+  return map;
+}
+
+function buildNeedsResult(rec: NeedsRecommendation): NeedsResultPayload {
+  return {
+    primaryRecommendation: rec.primary,
+    secondaryRecommendation: rec.secondary ?? null,
+    recommendationConfidence: rec.confidence,
+    ksmScore: rec.scores.ksm,
+    kprScore: rec.scores.kpr,
+    kkbScore: rec.scores.kkb,
+  };
+}
+
+async function handleNeedsSubmission(
+  answers: unknown,
+  trimmedName: string,
+  normalizedPhone: string,
+) {
+  const supabase = createAdminClient();
+
+  const { data: questionRows, error: qError } = await supabase
+    .from("question_bank")
+    .select("question_id, order_index")
+    .eq("assessment_type", "NEEDS")
+    .order("order_index");
+  if (qError || !questionRows) {
+    console.error("[submissions] gagal memuat pertanyaan NEEDS:", qError);
+    return errorResponse(
+      500,
+      "INTERNAL",
+      "Terjadi gangguan saat memproses jawaban. Coba lagi ya.",
+    );
+  }
+
+  const questionIds = questionRows.map((q) => q.question_id);
+  const { data: optionRows, error: oError } = await supabase
+    .from("question_option")
+    .select(
+      "option_id, question_id, option_text, score_ksm, score_kpr, score_kkb",
+    )
+    .in("question_id", questionIds);
+  if (oError || !optionRows) {
+    console.error("[submissions] gagal memuat opsi NEEDS:", oError);
+    return errorResponse(
+      500,
+      "INTERNAL",
+      "Terjadi gangguan saat memproses jawaban. Coba lagi ya.",
+    );
+  }
+
+  // Validasi jawaban identik dengan RATING: semua pertanyaan wajib terjawab,
+  // opsi harus valid, tidak boleh ganda (AC10, Bab 23).
+  if (!Array.isArray(answers)) {
+    return errorResponse(
+      400,
+      "INVALID_ANSWER",
+      "Jawaban tidak valid. Silakan coba lagi ya.",
+    );
+  }
+
+  const validOptions = new Map<
+    string,
+    Map<string, { ksm: number; kpr: number; kkb: number }>
+  >();
+  for (const row of optionRows) {
+    let byQuestion = validOptions.get(row.question_id);
+    if (!byQuestion) {
+      byQuestion = new Map();
+      validOptions.set(row.question_id, byQuestion);
+    }
+    byQuestion.set(row.option_id, {
+      ksm: row.score_ksm ?? 0,
+      kpr: row.score_kpr ?? 0,
+      kkb: row.score_kkb ?? 0,
+    });
+  }
+
+  const picked = new Map<string, string>();
+  for (const item of answers) {
+    const answer = (item ?? {}) as AnswerInput;
+    const questionId =
+      typeof answer.questionId === "string" ? answer.questionId : "";
+    const optionId = typeof answer.optionId === "string" ? answer.optionId : "";
+    if (!questionIds.includes(questionId)) {
+      return errorResponse(
+        400,
+        "INVALID_ANSWER",
+        "Ada pertanyaan yang tidak dikenali. Silakan coba lagi ya.",
+      );
+    }
+    if (picked.has(questionId)) {
+      return errorResponse(
+        400,
+        "INVALID_ANSWER",
+        "Ada jawaban yang ganda. Silakan coba lagi ya.",
+      );
+    }
+    const options = validOptions.get(questionId);
+    if (!options || !options.has(optionId)) {
+      return errorResponse(
+        400,
+        "INVALID_ANSWER",
+        "Ada pilihan jawaban yang tidak valid. Silakan coba lagi ya.",
+      );
+    }
+    picked.set(questionId, optionId);
+  }
+
+  const missingQuestionIds = questionIds.filter((id) => !picked.has(id));
+  if (missingQuestionIds.length > 0) {
+    return NextResponse.json(
+      {
+        error: {
+          code: "INCOMPLETE_ANSWERS",
+          message: "Belum semua pertanyaan dijawab.",
+          missingQuestionIds,
+        },
+      },
+      { status: 400 },
+    );
+  }
+
+  // Idempoten (F14): nomor yang sudah pernah submit NEEDS -> kembalikan lama.
+  const existing = await findExistingNeedsSubmission(supabase, normalizedPhone);
+  if (existing) return NextResponse.json(existing);
+
+  // ---- Hitung skor di server (F8, Bab 8.5) ----
+  const pointsByQuestion: Record<string, { ksm: number; kpr: number; kkb: number }> = {};
+  for (const [questionId, optionId] of picked) {
+    const option = validOptions.get(questionId)?.get(optionId);
+    if (option) pointsByQuestion[questionId] = option;
+  }
+  const scores = sumNeedsScores(pointsByQuestion);
+  const rec = buildNeedsRecommendation(scores, {
+    actualNeed: needsAnswerMap(picked).Q7_NEEDS ?? null,
+    urgency: needsAnswerMap(picked).Q9_NEEDS ?? null,
+    assetGap: needsAnswerMap(picked).Q3_NEEDS ?? null,
+    lifeStage: needsAnswerMap(picked).Q1_NEEDS ?? null,
+  });
+  const result = buildNeedsResult(rec);
+
+  const now = new Date().toISOString();
+  const { data: submissionRow, error: insertError } = await supabase
+    .from("submission")
+    .insert({
+      assessment_type: "NEEDS",
+      customer_name: trimmedName,
+      customer_phone: normalizedPhone,
+      ksm_score: result.ksmScore,
+      kpr_score: result.kprScore,
+      kkb_score: result.kkbScore,
+      primary_recommendation: result.primaryRecommendation,
+      secondary_recommendation: result.secondaryRecommendation,
+      recommendation_confidence: result.recommendationConfidence,
+      submitted_at: now,
+    })
+    .select("submission_id")
+    .single();
+
+  if (insertError) {
+    if (insertError.code === "23505") {
+      const winner = await findExistingNeedsSubmission(supabase, normalizedPhone);
+      if (winner) return NextResponse.json(winner);
+    }
+    console.error("[submissions] insert submission NEEDS gagal:", insertError);
+    return errorResponse(
+      500,
+      "INTERNAL",
+      "Jawaban belum tersimpan. Data kamu aman — silakan coba lagi.",
+    );
+  }
+
+  const submissionId = submissionRow.submission_id;
+
+  const { error: answersError } = await supabase.from("submission_answer").insert(
+    questionIds.map((questionId) => ({
+      submission_id: submissionId,
+      question_id: questionId,
+      option_id: picked.get(questionId)!,
+    })),
+  );
+  if (answersError) {
+    console.error("[submissions] insert submission_answer NEEDS gagal:", answersError);
+    return errorResponse(
+      500,
+      "INTERNAL",
+      "Jawaban belum tersimpan sepenuhnya. Silakan coba lagi.",
+    );
+  }
+
+  return NextResponse.json(
+    {
+      submissionId,
+      result,
+    },
+    { status: 201 },
+  );
+}
+
+// Cari submission NEEDS aktif (belum soft-delete) terbaru untuk nomor ini.
+async function findExistingNeedsSubmission(
+  supabase: ReturnType<typeof createAdminClient>,
+  phone: string,
+) {
+  const { data, error } = await supabase
+    .from("submission")
+    .select(
+      "submission_id, ksm_score, kpr_score, kkb_score, primary_recommendation, secondary_recommendation, recommendation_confidence",
+    )
+    .eq("customer_phone", phone)
+    .eq("assessment_type", "NEEDS")
+    .is("deleted_at", null)
+    .order("submitted_at", { ascending: false, nullsFirst: false })
+    .limit(1);
+  if (error || !data || data.length === 0) return null;
+
+  const row = data[0];
+  return {
+    submissionId: row.submission_id,
+    alreadyExists: true,
+    result: {
+      primaryRecommendation: row.primary_recommendation,
+      secondaryRecommendation: row.secondary_recommendation,
+      recommendationConfidence: row.recommendation_confidence,
+      ksmScore: row.ksm_score ?? 0,
+      kprScore: row.kpr_score ?? 0,
+      kkbScore: row.kkb_score ?? 0,
+    } satisfies NeedsResultPayload,
+  };
 }
 
 // Cari submission aktif (belum soft-delete) terbaru untuk nomor ini.

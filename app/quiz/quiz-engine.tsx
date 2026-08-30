@@ -61,8 +61,9 @@ function firstName(full: string) {
   return full.trim().split(/\s+/)[0] ?? full;
 }
 
-function eyebrowFor(question: QuizQuestion): string {
+function eyebrowFor(question: QuizQuestion, type: "RATING" | "NEEDS"): string {
   if (question.dimension) return question.dimension;
+  if (type === "NEEDS") return "Kebutuhan Kredit";
   if (question.questionId === "Q13_RATING") return "Tujuan Finansial";
   if (question.questionId === "Q14_RATING") return "Kebutuhan Finansial";
   return "Lanjutan";
@@ -339,15 +340,16 @@ export default function QuizEngine({
             Selesai, {firstName(identity.name)}!
           </h1>
           <p className="mt-3 max-w-sm text-base leading-relaxed text-muted">
-            Jawaban kamu sudah tersimpan. Satu langkah lagi — lihat gambaran
-            kesehatan finansialmu hari ini.
+            {type === "NEEDS"
+              ? "Jawaban kamu sudah tersimpan. Satu langkah lagi — lihat produk kredit yang paling cocok untukmu."
+              : "Jawaban kamu sudah tersimpan. Satu langkah lagi — lihat gambaran kesehatan finansialmu hari ini."}
           </p>
           <button
             type="button"
             onClick={() => router.push(`${resultPath}?id=${submissionId}`)}
             className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-accent px-7 text-sm font-semibold text-white transition-all duration-200 hover:bg-accent-deep active:scale-[0.98]"
           >
-            Lihat hasil kamu
+            {type === "NEEDS" ? "Lihat rekomendasi kamu" : "Lihat hasil kamu"}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
           <p className="mt-4 text-xs text-muted/80">
@@ -395,7 +397,7 @@ export default function QuizEngine({
             </>
           ) : isLast ? (
             <>
-              Lihat hasil
+              {type === "NEEDS" ? "Lihat rekomendasi" : "Lihat hasil"}
               <Sparkles className="h-4 w-4" aria-hidden />
             </>
           ) : (
@@ -417,7 +419,7 @@ export default function QuizEngine({
       >
         <div className="flex items-center justify-between gap-3">
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-accent-deep">
-            {eyebrowFor(question)}
+            {eyebrowFor(question, type)}
           </p>
           <p className="shrink-0 text-[11px] font-semibold text-muted">
             Soal {index + 1} dari {total}

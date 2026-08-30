@@ -5,17 +5,20 @@ import {
   type DimensionKey,
 } from "@/lib/scoring/constants";
 
-// GET /api/result?id=<submission_id> — hasil Financial Health Score (F6).
+// GET /api/result?id=<submission_id> — hasil assessment (F6 / F9).
 // Publik, tapi query lewat service-role di server karena RLS melarang read
 // publik ke tabel submission (PRD Bab 23). submission_id adalah UUID yang
 // tidak dapat ditebak → akses praktis hanya untuk pemilik id-nya (pola
 // "capability URL"). Hanya mengembalikan field untuk tampilan hasil — tanpa
 // jawaban mentah maupun nomor HP nasabah.
 //
-// Dipakai oleh halaman result (Modul 8) untuk dua alur:
+// Dipakai oleh halaman result untuk dua alur:
 //  1. Sesudah submit → nasabah melihat hasil baru.
 //  2. F14 → nomor yang sudah pernah submit di-redirect ke hasil lama (sesi
 //     baru, tidak ada data di client), jadi hasil wajib diambil dari DB.
+//
+// RATING → skor + persona + dimensi (F6). NEEDS → skor KSM/KPR/KKB +
+// rekomendasi 1/2 produk (F9).
 
 function errorResponse(status: number, code: string, message: string) {
   return NextResponse.json({ error: { code, message } }, { status });
@@ -36,10 +39,9 @@ export async function GET(request: Request) {
   const { data, error } = await supabase
     .from("submission")
     .select(
-      "submission_id, customer_name, final_score, persona, readiness, ksm_gate, primary_recommendation, secondary_recommendation, recommendation_confidence, financial_goal, financial_need",
+      "submission_id, customer_name, assessment_type, final_score, persona, readiness, ksm_gate, primary_recommendation, secondary_recommendation, recommendation_confidence, financial_goal, financial_need, ksm_score, kpr_score, kkb_score",
     )
     .eq("submission_id", id)
-    .eq("assessment_type", "RATING")
     .is("deleted_at", null)
     .maybeSingle();
 
@@ -59,6 +61,22 @@ export async function GET(request: Request) {
     );
   }
 
+  if (data.assessment_type === "NEEDS") {
+    return NextResponse.json({
+      submissionId: data.submission_id,
+      customerName: data.customer_name,
+      assessmentType: "NEEDS",
+      result: {
+        primaryRecommendation: data.primary_recommendation,
+        secondaryRecommendation: data.secondary_recommendation,
+        recommendationConfidence: data.recommendation_confidence,
+        ksmScore: data.ksm_score ?? 0,
+        kprScore: data.kpr_score ?? 0,
+        kkbScore: data.kkb_score ?? 0,
+      },
+    });
+  }
+
   const { data: dims } = await supabase
     .from("dimension_result")
     .select("dimension, raw_score, contribution, status")
@@ -67,6 +85,7 @@ export async function GET(request: Request) {
   return NextResponse.json({
     submissionId: data.submission_id,
     customerName: data.customer_name,
+    assessmentType: "RATING",
     result: {
       finalScore: data.final_score ?? 0,
       persona: data.persona ?? "",

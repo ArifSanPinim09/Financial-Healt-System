@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import IdentityForm, { type Identity } from "./identity-form";
@@ -65,10 +65,6 @@ function getServerIdentity(): Identity | null {
   return null;
 }
 
-function firstName(full: string) {
-  return full.trim().split(/\s+/)[0] ?? full;
-}
-
 function StepProgress({ step, questionCount }: { step: 1 | 2; questionCount: number }) {
   return (
     <div className="reveal-up ad-1 pt-10 sm:pt-14">
@@ -91,66 +87,7 @@ function StepProgress({ step, questionCount }: { step: 1 | 2; questionCount: num
   );
 }
 
-// Tahap 2: placeholder kuis — Modul 5/9 akan mengisi engine pertanyaan di sini.
-function QuizReadyState({
-  identity,
-  title,
-  questionCount,
-  onEdit,
-}: {
-  identity: Identity;
-  title: string;
-  questionCount: number;
-  onEdit: () => void;
-}) {
-  return (
-    <section className="reveal-up rounded-[1.75rem] border border-line bg-card p-7 sm:p-9">
-      <div className="flex items-center gap-4">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent-tint text-accent-deep">
-          <CheckCircle2 className="h-6 w-6" strokeWidth={1.8} aria-hidden />
-        </span>
-        <div>
-          <h1 className="font-serif text-2xl font-semibold leading-tight tracking-tight text-ink">
-            Halo, {firstName(identity.name)}!
-          </h1>
-          <p className="mt-1 text-sm text-muted">
-            Identitas terkonfirmasi. {title} dimulai sekarang.
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-paper/70 px-4 py-3 text-sm">
-        <span className="font-semibold text-ink">{identity.name}</span>
-        <span className="h-1 w-1 rounded-full bg-line" aria-hidden />
-        <span className="text-muted">{identity.phone}</span>
-        <button
-          type="button"
-          onClick={onEdit}
-          className="ml-auto rounded-full px-2.5 py-1 text-xs font-semibold text-accent-deep underline-offset-2 transition-colors hover:bg-accent-tint hover:underline"
-        >
-          Ubah
-        </button>
-      </div>
-
-      <div className="mt-8">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-accent-deep">
-          Pertanyaan 1 dari {questionCount}
-        </p>
-        <div className="mt-4 space-y-3" aria-hidden>
-          <div className="h-5 w-3/4 animate-pulse rounded-full bg-line/80" />
-          <div className="h-5 w-1/2 animate-pulse rounded-full bg-line/60" />
-          <div className="mt-6 h-14 w-full animate-pulse rounded-2xl bg-line/50" />
-          <div className="h-14 w-full animate-pulse rounded-2xl bg-line/50" />
-          <div className="h-14 w-full animate-pulse rounded-2xl bg-line/50" />
-        </div>
-        <p className="mt-5 flex items-center gap-2 text-sm text-muted">
-          <Loader2 className="h-4 w-4 animate-spin text-accent-deep" aria-hidden />
-          Menyiapkan pertanyaan untukmu…
-        </p>
-      </div>
-    </section>
-  );
-}
+// Tahap 2: mesin kuis bersama (RATING & NEEDS) — lihat quiz-engine.tsx.
 
 export default function QuizFlow({
   type,
@@ -174,16 +111,6 @@ export default function QuizFlow({
       // private mode: persist gagal → simpan in-memory, lanjut sesi ini.
       memoryFallback.set(type, id);
     }
-    window.dispatchEvent(new Event(IDENTITY_EVENT));
-  }
-
-  function resetIdentity() {
-    try {
-      window.sessionStorage.removeItem(storageKey(type));
-    } catch {
-      // abaikan
-    }
-    memoryFallback.delete(type);
     window.dispatchEvent(new Event(IDENTITY_EVENT));
   }
 
@@ -218,21 +145,11 @@ export default function QuizFlow({
         <StepProgress step={inQuiz ? 2 : 1} questionCount={questionCount} />
         <div className="pt-6 sm:pt-8">
           {inQuiz && identity ? (
-            type === "RATING" ? (
-              <QuizEngine
-                type={type}
-                identity={identity}
-                resultPath={resultPath}
-              />
-            ) : (
-              // Engine pertanyaan NEEDS disambungkan di Modul 9.
-              <QuizReadyState
-                identity={identity}
-                title={title}
-                questionCount={questionCount}
-                onEdit={resetIdentity}
-              />
-            )
+            <QuizEngine
+              type={type}
+              identity={identity}
+              resultPath={resultPath}
+            />
           ) : (
             <IdentityForm
               assessmentType={type}

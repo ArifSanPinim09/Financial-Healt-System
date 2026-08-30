@@ -10,8 +10,8 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | Identity Capture & Pembatasan 1x | 🟢 | 2026-08-30 |
 | Financial Rating Quiz + Scoring + KSM Gate | 🟢 | 2026-08-30 |
 | Financial Rating Result Page | 🟢 | 2026-08-30 |
-| Financial Needs Quiz + Scoring + Tie-Breaker | 🔴 | - |
-| Financial Needs Result Page | 🔴 | - |
+| Financial Needs Quiz + Scoring + Tie-Breaker | 🟢 | 2026-08-30 |
+| Financial Needs Result Page | 🟢 | 2026-08-30 |
 | CTA WhatsApp Round-Robin | 🟢 | 2026-08-30 |
 | Admin Login | 🔴 | - |
 | Admin Dashboard | 🔴 | - |
@@ -20,6 +20,24 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-30] Modul 9 (Needs Quiz) + Modul 10 (KSM/KPR/KKB Scoring & Tie-Breaker) + Modul 11 (Needs Result) — SELESAI
+- **Engine scoring NEEDS** (F8, Bab 8.5) di `lib/scoring/needs.ts` — murni & testable:
+  - `sumNeedsScores`: raw sum per kategori KSM/KPR/KKB (tanpa bobot — dikonfirmasi client "raw sum aja mas").
+  - `buildNeedsRecommendation`: urutan wajib Bab 8.5 — cari skor tertinggi → selisih ≥5 = STRONG (1 produk), 3–4 = RECOMMENDATION (1 produk), 1–2 = DUAL (2 produk teratas), 0 (tie persis) = Tie-Breaker Rule berurutan **Actual Need (Q7) → Urgency (Q9) → Asset Gap (Q3/Q5) → Life Stage (Q1, supporting factor terakhir)**. Jika tetap tak bisa dibedakan ATAU skor berdekatan → "No Strong Recommendation", `isBalanced=true` (copy "kebutuhan berimbang").
+  - Tie-breaker berbasis **sinyal jawaban per produk** (bukan urutan array): Q7 keluarga/pendidikan/liburan/usaha→KSM, rumah→KPR, kendaraan→KKB; Q9 makin cepat makin tinggi (KSM); Q3 gap rumah→KPR, Q5 gap kendaraan→KKB; Q1 menikah/anak→KSM. Jawaban "UNANSWERED"/netral dilewati ke breaker berikutnya.
+  - Catatan desain: tie yang diputuskan tie-breaker (1 pemenang) tetap `confidence=DUAL` + `secondary` (runner-up) agar UI menampilkan 2 opsi; tie 3 arah tak terpisah → primary + secondary dari 2 produk relevan.
+  - ⚠️ Bug nyata yang ditemukan saat test: comparator `scores[b] - scores[a]` di `rankByScore` menghasilkan NaN karena kunci uppercase tidak ada di objek `{ksm,kpr,kkb}` (sort stabil mengembalikan urutan awal [KSM,KPR,KKB] — selalu KSM menang). Diperbaiki jadi `scores[b.toLowerCase()] - scores[a.toLowerCase()]`. Ditangkap unit test AC8 (28/29/27).
+- **Unit test** `lib/scoring/needs.test.ts` (Bab 26): AC6 (36/24/12 → STRONG KSM, tanpa secondary) ✓, AC7 (30/30 tie + Q7=Rumah → KPR via actual need) ✓, AC8 (28/29/27 → KPR+KSM, balanced) ✓, boundary selisih 4/5/1-2, tie 3 arah, tie-breaker berurutan (actual need netral → urgency → asset gap), `sumNeedsScores` 10 pertanyaan. Total 31 test pass.
+- **Backend `POST /api/submissions`** (F7/F8, Bab 22/23): NEEDS tidak lagi 501. Validasi identik RATING (nama, no HP dinormalisasi, rate limit); **skor dihitung ulang dari DB** (`score_ksm/kpr/kkb` per `option_id` — nilai client tidak dipercaya); insert `submission` (simpan `ksm_score/kpr_score/kkb_score` + `primary_recommendation`/`secondary_recommendation`/`recommendation_confidence`) + `submission_answer`; **idempoten** per `(customer_phone, NEEDS)` (F14) + race 23505; AC10 `INCOMPLETE_ANSWERS` + daftar soal terlewat. Validasi nama/HP dipindah ke atas sebelum cabang jenis assessment (dipakai kedua alur).
+- **Backend `GET /api/result`** (F9): kini baca `assessment_type` dari row — NEEDS mengembalikan skor kategori + rekomendasi (tanpa dimensi), RATING tetap seperti semula (regresi aman). Tetap tanpa no HP & jawaban mentah.
+- **Frontend quiz** (F7, Bab 16.2): `quiz-flow.tsx` kini merender `QuizEngine` untuk **kedua** jenis (placeholder `QuizReadyState` dihapus); `quiz-engine.tsx` — eyebrow "Kebutuhan Kredit" untuk NEEDS, tombol terakhir "Lihat rekomendasi" (vs "Lihat hasil"), copy selesai beda konteks. Semua perilaku lama (persist sessionStorage, Kembali/Lanjut, sticky mobile, error/retry) otomatis berlaku untuk NEEDS.
+- **Result page** `app/financial-needs/result/` (F9, Bab 16.4): `page.tsx` (Suspense + metadata) + `needs-result-client.tsx`. F12 loading bertahap (3 pesan "Menganalisis kebutuhanmu…" → "Mencocokkan dengan produk…" → "Menemukan rekomendasi…", ±3.2 dtk); header rekomendasi ("KSM atau KPR" untuk dual), intro confidence (STRONG/RECOMMENDATION/DUAL + copy berimbang), 3 score bar KSM/KPR/KKB (skala relatif, label teks); **single** → 1 product card (icon + nama + tagline + deskripsi + CTA "Lihat Pilihan X"); **dual** → kartu "Kebutuhanmu terlihat berimbang" + 2 product card (primary highlight "Rekomendasi utama"). CTA → `POST /api/cs` round-robin → `wa.me/{no}?text={pesan}` tab baru (pesan personalisasi nama + produk). Missing/error state konsisten dgn result RATING.
+- **Copy produk** (F9): KSM "Kredit Serbaguna Mandiri", KPR "Kredit Pemilikan Rumah", KKB "Kredit Kendaraan Bermotor" — nama per PRD 8.6 (istilah tetap dipakai).
+- Verifikasi: 31 unit test ✓, typecheck ✓, lint ✓ (0 error, 1 warning generated file), build ✓. API live (server final): submit NEEDS → 201 + KPR STRONG (13/35/17) & KSM STRONG (22/11/12) dari jawaban berbeda; **DUAL** ditemukan (18/13/17 → KSM+KKB, confidence DUAL) via pencarian acak; idempoten → `alreadyExists` + id sama; `submission-check` F14 → `found:true`; `INCOMPLETE_ANSWERS` & `INVALID_ANSWER` → 400; RATING regresi → 201 + persona benar, `GET /api/result` RATING → 6 dimensi. Halaman `/financial-needs/quiz` & `/financial-needs/result?id=` → 200. Data uji di-cleanup dari DB (hanya sisa 1 submission demo lama).
+- ⚠️ Temuan (bukan dari modul ini, sudah ada sebelumnya): function DB `get_next_cs()` masih error 42702 "column reference 'id' is ambiguous" — endpoint `/api/cs` sudah bypass (round-robin di endpoint), function DB tetap dead code utk dibersihkan nanti.
+- Referensi PRD: Bab F7, F8, F9, 8.5, 8.6, 11, 16.2, 16.4, 22, 23, 26 (AC6, AC7, AC8)
+- Commit: (menyusul)
+
 ### [2026-08-30] Modul 8 (Result Page + Loading) & Modul 12 (CTA WA Round-Robin) — SELESAI
 - **Halaman hasil Financial Health Score** (F6, Bab 16.3) di `app/financial-health/result/`:
   - `page.tsx` (server) wrap `ResultClient` di `<Suspense>` (wajib utk `useSearchParams`) + metadata.
