@@ -76,4 +76,4 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - `quiz-flow.tsx`: RATING kini merender engine sungguhan; NEEDS masih placeholder (disambungkan Modul 9).
 - Verifikasi: 17 unit test ✓, typecheck ✓, lint ✓ (0 error, 1 warning generated file), build ✓. API live: submit lengkap → 201 + finalScore 82 = persis kalkulasi independen (CF 100, Debt 77.5, EF 67.5, Saving 72.5, Invest 90, Protection 82.5 → KSM Gate PASS, persona THE_BUILDER, readiness HIGH, confidence STRONG, goal/need tersimpan benar); AC10 → 400 + missing 11 id benar; opsi invalid → 400; NEEDS → 501; idempoten → id sama + `alreadyExists`; rate limit → 429 setelah 10 percobaan/jam. Browser desktop: identitas → Q1 (detail opsi B muncul, Lanjut aktif), Lanjut→Q2, Kembali→Q1 (jawaban B utuh), refresh di Q2 (restore soal+jawaban), 14 soal selesai → submit → "Selesai, Budi!" → CTA ke result?id= benar (404 = Modul 8), refresh → tetap state selesai. Browser mobile 390px: layout full-screen, sticky bar Lanjut di bawah, tap target besar. Data test semua di-cleanup dari DB.
 - Referensi PRD: Bab F2, F3, F4, F5, 11, 16.2, 17, 19, 20, 21, 22, 23, 26 (AC10)
-- Commit: <hash>
+- Commit: bf1357b
