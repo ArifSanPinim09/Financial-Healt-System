@@ -71,15 +71,15 @@
 - [x] Unit test untuk AC5 (Goal tidak override Readiness) (ref: PRD Bab 26)
 
 ## Modul 8: Financial Rating Result Page + Loading (F6, F12)
-- [ ] Implementasi loading experience bertahap (ref: PRD Bab F12)
+- [x] Implementasi loading experience bertahap (ref: PRD Bab F12)
   - "Analyzing your financial habits..."
   - "Looking at your financial patterns..."
   - "Finding your financial profile..."
-- [ ] Buat halaman hasil `/financial-health/result` (ref: PRD Bab 16.3)
-- [ ] Tampilkan skor besar, persona, deskripsi (ref: PRD Bab 16.3)
-- [ ] Tampilkan grid 6 status dimensi dengan warna (ref: PRD Bab 16.3, 20)
-- [ ] Tampilkan section "Your Next Move" dengan rekomendasi + CTA (ref: PRD Bab 16.3)
-- [ ] CTA buka WhatsApp CS round-robin (ref: PRD Bab F6, 8.6)
+- [x] Buat halaman hasil `/financial-health/result` (ref: PRD Bab 16.3)
+- [x] Tampilkan skor besar, persona, deskripsi (ref: PRD Bab 16.3)
+- [x] Tampilkan grid 6 status dimensi dengan warna (ref: PRD Bab 16.3, 20)
+- [x] Tampilkan section "Your Next Move" dengan rekomendasi + CTA (ref: PRD Bab 16.3)
+- [x] CTA buka WhatsApp CS round-robin (ref: PRD Bab F6, 8.6)
 
 ## Modul 9: Financial Needs Quiz Engine (F7)
 - [ ] Buat halaman quiz `/financial-needs/quiz` (ref: PRD Bab 14, 16.2)
@@ -103,9 +103,9 @@
 - [ ] CTA buka WhatsApp CS round-robin (ref: PRD Bab F9, 8.6)
 
 ## Modul 12: CTA WhatsApp Round-Robin
-- [ ] Implementasi endpoint untuk increment counter & ambil nomor CS (ref: PRD Bab 12.7)
-- [ ] Implementasi round-robin: last_used_index % jumlah_cs_aktif (ref: PRD Bab 12.7, F6)
-- [ ] Generate link wa.me dengan prefill message (ref: PRD Bab F6)
+- [x] Implementasi endpoint untuk increment counter & ambil nomor CS (ref: PRD Bab 12.7)
+- [x] Implementasi round-robin: last_used_index % jumlah_cs_aktif (ref: PRD Bab 12.7, F6)
+- [x] Generate link wa.me dengan prefill message (ref: PRD Bab F6)
 
 ## Modul 13: Admin Login (F11)
 - [ ] Buat halaman login `/admin/login` (ref: PRD Bab 16.5)
@@ -183,4 +183,4 @@ Modul 1 (Setup) → Modul 2 (Supabase) → Modul 3 (Landing)
 
 ---
 
-*Terakhir diupdate: 2026-08-30 (Modul 7 selesai)*
+*Terakhir diupdate: 2026-08-30 (Modul 8 + 12 selesai)*

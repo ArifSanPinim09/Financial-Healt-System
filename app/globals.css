@@ -16,6 +16,16 @@
   --error-deep: #8f3222;
   --error-tint: #f9ece8;
   --error-line: #eccabf;
+
+  /* Status dimensi (Bab 20): hijau tua → hijau muda → amber → merah. */
+  --strong: #1c6b4d;
+  --strong-tint: #e2f1e8;
+  --good: #4a8b3f;
+  --good-tint: #e9f3e1;
+  --improve: #9a6b0e;
+  --improve-tint: #f6edd7;
+  --priority: #b3402a;
+  --priority-tint: #f9ece8;
 }
 
 @theme inline {
@@ -33,6 +43,14 @@
   --color-error-deep: var(--error-deep);
   --color-error-tint: var(--error-tint);
   --color-error-line: var(--error-line);
+  --color-strong: var(--strong);
+  --color-strong-tint: var(--strong-tint);
+  --color-good: var(--good);
+  --color-good-tint: var(--good-tint);
+  --color-improve: var(--improve);
+  --color-improve-tint: var(--improve-tint);
+  --color-priority: var(--priority);
+  --color-priority-tint: var(--priority-tint);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-fraunces);
@@ -166,6 +184,43 @@ body {
   }
 }
 
+/* Ganti pesan bertahap loading hasil (F12) */
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Napas lembut untuk indikator "sedang menganalisis" */
+@keyframes soft-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.55;
+  }
+}
+
+@keyframes ring-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .reveal-up {
     opacity: 0;
@@ -200,6 +255,18 @@ body {
 
   .detail-in {
     animation: detail-in 0.25s ease-out both;
+  }
+
+  .msg-in {
+    animation: msg-in 0.5s ease-out both;
+  }
+
+  .soft-pulse {
+    animation: soft-pulse 1.9s ease-in-out infinite;
+  }
+
+  .ring-breathe {
+    animation: ring-breathe 2.4s ease-in-out infinite;
   }
 }
 

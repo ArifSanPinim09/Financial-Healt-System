@@ -9,10 +9,10 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | Landing Page | 🟢 | 2026-08-30 |
 | Identity Capture & Pembatasan 1x | 🟢 | 2026-08-30 |
 | Financial Rating Quiz + Scoring + KSM Gate | 🟢 | 2026-08-30 |
-| Financial Rating Result Page | 🔴 | - |
+| Financial Rating Result Page | 🟢 | 2026-08-30 |
 | Financial Needs Quiz + Scoring + Tie-Breaker | 🔴 | - |
 | Financial Needs Result Page | 🔴 | - |
-| CTA WhatsApp Round-Robin | 🔴 | - |
+| CTA WhatsApp Round-Robin | 🟢 | 2026-08-30 |
 | Admin Login | 🔴 | - |
 | Admin Dashboard | 🔴 | - |
 | Admin Detail (Edit/Delete + Audit Log) | 🔴 | - |
@@ -20,6 +20,23 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-30] Modul 8 (Result Page + Loading) & Modul 12 (CTA WA Round-Robin) — SELESAI
+- **Halaman hasil Financial Health Score** (F6, Bab 16.3) di `app/financial-health/result/`:
+  - `page.tsx` (server) wrap `ResultClient` di `<Suspense>` (wajib utk `useSearchParams`) + metadata.
+  - `result-client.tsx`: baca `id` dari URL → fetch `GET /api/result?id=` → tampilkan hasil.
+  - **F12 Loading Experience** (Bab F12): 3 pesan bertahap tone "self-discovery" — "Menganalisis kebiasaan finansialmu…" → "Mempelajari pola finansialmu…" → "Menemukan profil finansialmu…" (±3.2 dtk, indikator kompas napas + 3 dot progres). Hasil muncul setelah animasi SELESAI **dan** data terambil.
+  - **Skor besar** = cincin SVG terisi (animate 0→skor) + "98/100"; **persona** (pill + deskripsi); **grid 6 dimensi** (2 kolom) dengan warna semantik status (Kuat=hijau tua, Baik=hijau, Perbaiki=amber, Prioritas=merah — Bab 20) + mini bar skor; **section "Your Next Move"** (headline per jalur rekomendasi + body + box personalisasi goal Q13 + CTA).
+  - Copy customer-facing bahasa Indonesia (konsisten dgn seluruh app); nama persona tetap Inggris (The Architect dst.); label dimensi tetap dari DB (Cash Flow dst.).
+  - Layout responsif (Bab 16.3): desktop = skor+persona kiri, grid dimensi kanan; mobile = stack vertikal.
+  - A11y (Bab 21): status tidak hanya warna (ada label teks Kuat/Baik/…), body ≥16px, tap target besar, `aria` pada progress/bar.
+  - State: loading (F12) → result; error load → kartu ramah + retry; tanpa `id` → "Belum ada hasil" + CTA mulai assessment.
+- **`GET /api/result?id=<submission_id>`** (Bab 22/23, F6): service-role di server (RLS melarang read publik), kunci = `submission_id` (UUID tak terduga, pola capability URL). Kembalikan **hanya field tampilan** (finalScore, persona, readiness, ksm_gate, rekomendasi, goal/need, 6 dimensi) — **tanpa no HP & tanpa jawaban mentah**. 404 utk id tak dikenal/terhapus. Dipakai utk alur submit-baru **dan** F14 (redirect ke hasil lama, sesi baru tanpa data client).
+- **`POST /api/cs`** (Modul 12, Bab 12.7/F6): round-robin pilih 1 dari 3 nomor CS. `index = last_used_index % jumlah_cs_aktif`, lalu counter di-increment. Kembalikan `waNumber` (digits) + prefill default. CTA di result page memanggilnya → buka `wa.me/{no}?text={pesan}` di tab baru; pesan personalisasi (nama, skor, persona, rekomendasi).
+- ⚠️ **Temuan + deviasi penting:** function DB `get_next_cs()` (dibuat Modul 2) **rusak** — error 42702 "column reference 'id' is ambiguous". Tak ada channel SQL utk fix (Supabase MCP tak tersedia di sesi ini; project ref app tak ada di org CLI). Solusi: round-robin diimplementasikan **langsung di endpoint** via service-role (lebih terkontrol, tak bergantung function DB). Function DB kini dead code — perlu diperbaiki/dihapus nanti. Race kecil read-then-write dapat diterima utk skala demo (counter tetap monotonic).
+- Verifikasi: typecheck ✓, lint ✓ (0 error), 17 unit test ✓, build ✓. Uji browser end-to-end: submit RATING (skor 98/THE ARCHITECT/KSM PASS, 6 dimensi STRONG) → F12 loading → result render (cincin, persona, grid warna, Your Next Move); CTA → tab baru WhatsApp `6281234567892` + pesan personalisasi benar (rotasi lanjut dari counter); **F14** re-enter nomor → "sudah pernah mengisi" → auto-redirect ke result lama (render benar, sesi baru); mobile 390px stack rapi (label panjang tak terpotong). Uji `/api/result` (data benar, tanpa phone, 404) & `/api/cs` (rotasi 3 nomor + wrap-around + counter naik). Data test di-cleanup, counter direset.
+- Referensi PRD: Bab F6, F12, 12.7, 16.3, 20, 22, 23, 24
+- Commit: <hash>
+
 ### [2026-08-30] Modul 7 (KSM Gate & Recommendation Engine) — SELESAI
 - KSM Gate & Recommendation Engine (F5) lengkap di `lib/scoring/recommendation.ts` (sudah diimplementasikan sejak Modul 1, diverifikasi & ditandai selesai di modul ini).
 - `evaluateKsmGate` (Bab 8.2): PASS hanya jika SEMUA — Final Score ≥70 AND Cash Flow ≥60 AND Debt Management ≥60 AND Emergency Fund ≥40. Salah satu gagal → FAIL walau Final Score tinggi.
