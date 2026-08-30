@@ -108,10 +108,10 @@
 - [x] Generate link wa.me dengan prefill message (ref: PRD Bab F6)
 
 ## Modul 13: Admin Login (F11)
-- [ ] Buat halaman login `/admin/login` (ref: PRD Bab 16.5)
-- [ ] Integrasi Supabase Auth (signInWithPassword) (ref: PRD Bab F11, 23)
-- [ ] Redirect ke dashboard setelah login sukses (ref: PRD Bab F11)
-- [ ] Error handling: pesan generik "Email atau password salah" (ref: PRD Bab 16.5)
+- [x] Buat halaman login `/admin/login` (ref: PRD Bab 16.5)
+- [x] Integrasi Supabase Auth (signInWithPassword) (ref: PRD Bab F11, 23)
+- [x] Redirect ke dashboard setelah login sukses (ref: PRD Bab F11)
+- [x] Error handling: pesan generik "Email atau password salah" (ref: PRD Bab 16.5)
 
 ## Modul 14: Admin Dashboard — List & Filter (F10)
 - [ ] Buat halaman dashboard `/admin/dashboard` (ref: PRD Bab 16.6)
