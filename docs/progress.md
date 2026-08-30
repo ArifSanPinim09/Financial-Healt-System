@@ -15,11 +15,23 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | CTA WhatsApp Round-Robin | 🟢 | 2026-08-30 |
 | Admin Login | 🟢 | 2026-08-30 |
 | Admin Dashboard | 🟢 | 2026-08-30 |
-| Admin Detail (Edit/Delete + Audit Log) | 🔴 | - |
+| Admin Detail (Edit/Delete + Audit Log) | 🟢 | 2026-08-30 |
 | Responsive & Accessibility | 🔴 | - |
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-30] Modul 15 (Admin Detail — Edit/Delete + Audit Log) — SELESAI
+- `/api/submissions/[id]` (Bab 22, F10 — wajib `requireAdmin()`, selain itu 401):
+  - `GET`: detail lengkap 1 submission — data nasabah + hasil ringkas, 14/10 pertanyaan + opsi + jawaban terpilih, `dimension_result` (RATING), riwayat `submission_audit_log` (max 50, nama admin via email). 404 bila tidak ada / sudah dihapus / ID bukan UUID.
+  - `PATCH`: admin edit nama/no HP/jawaban. Nama min 2 huruf; no HP dinormalisasi (F14) + **409 `PHONE_CONFLICT`** bila nomor sudah dipakai submission lain jenis sama; jawaban wajib lengkap & valid (AC10, aturan identik submit) → **skor & rekomendasi dihitung ulang di server** dengan engine yang sama persis (deterministik, Bab 24) — RATING: final_score/persona/readiness/ksm_gate/rekomendasi/goal/need + snapshot `dimension_result` ikut diganti; NEEDS: ksm/kpr/kkb_score + rekomendasi. Tanpa perubahan → 400 `NOTHING_TO_UPDATE`. Set `updated_at`/`updated_by` (Bab 12.3).
+  - `DELETE`: **soft-delete** (`deleted_at`, bukan hapus permanen — Bab F10/12.3) + `updated_by`. Baris tetap di DB (audit & pemulihan).
+  - **Audit log WAJIB (Bab 25)**: UPDATE → diff field lama/baru via `buildAuditChange` (hanya field yang berubah; jawaban = map `old.answers` vs `new.answers`; hasil terhitung yang ikut berubah ikut tercatat); DELETE → `buildDeleteSnapshot` (snapshot 16 field sebelum hapus). Admin = `admin_id` dari session. Audit gagal → 500 `AUDIT_FAILED` (admin tahu ada perubahan tanpa jejak).
+- `app/admin/submission/[id]/` (Bab 16.7): `page.tsx` (requireAdmin → redirect login, AC9) + `detail-client.tsx`: kartu DATA NASABAH (nama, no HP, chip jenis, tanggal) + tombol Edit/Hapus, HASIL RINGKAS (RATING: skor+persona+gate+rekomendasi; NEEDS: 3 score bar KSM/KPR/KKB), **Detail jawaban** accordion per soal (opsi terpilih di-highlight), section **Riwayat perubahan** (aksi, email admin, waktu, expand "N field berubah" → sebelum → sesudah per field), **form Edit** (nama, no HP, radio per soal, Batal/Simpan), **modal konfirmasi hapus** (`confirm-modal.tsx` — dialog aksesibel: "Data … akan ditandai terhapus … tidak bisa dibatalkan dari aplikasi"), toast (`toast.tsx`): "Perubahan disimpan" / "Data berhasil dihapus" (auto-hide 3,5 dtk, `role=status`).
+- Unit test AC9 (di `lib/admin/access.test.ts`, commit lib/admin): keputusan akses murni — belum login → NOT_AUTHENTICATED, login tapi tanpa `admin_profile` → NOT_ADMIN, valid → OK. Ditambah 5 test audit diff.
+- Verifikasi: 40 unit test ✓, typecheck ✓, lint ✓, build ✓. **API E2E 23 kasus ✓**: 401 semua metode tanpa auth; detail RATING (14 soal/6 dimensi) & NEEDS (10 soal); PATCH nama/phone + audit UPDATE (old/new + email admin); `NOTHING_TO_UPDATE`; `INVALID_PHONE`; edit jawaban → skor KSM/KPR/KKB & finalScore ter-rekalkulasi + audit answers & skor before/after + dimension_result diperbarui; restore; DELETE → 200, GET/DELETE ulang → 404, hilang dari list, **verifikasi langsung DB: baris masih ada + `deleted_at` terisi + audit DELETE snapshot + N audit UPDATE**. **Browser E2E ✓**: detail render (data+jawaban+riwayat), edit nama → toast "Perubahan disimpan" + entry audit expandable (sebelum→sesudah), hapus → modal → toast → dashboard (baris hilang), logout → login, AC12 nasabah (no HP lama → skip quiz → halaman hasil lama). Data tes di-cleanup (hanya sisa submission asli).
+- Referensi PRD: Bab F10, 12.3, 16.7, 22, 23, 25, 26 (AC9, AC10)
+- Commit: (menyusul)
+
 ### [2026-08-30] Modul 14 (Admin Dashboard — List & Filter) — SELESAI
 - `GET /api/submissions` (Bab 22, admin — wajib session `requireAdmin()`, selain itu 401): list submission untuk dashboard (Bab 16.6, 18).
   - Filter: `type` (RATING/NEEDS), `recommendation` (whitelist 7 nilai), `date_from`/`date_to` (YYYY-MM-DD, diartikan hari WIB UTC+7 — assumption demo), `q` search nama/nomor HP (ilike, karakter khusus PostgREST disanitasi).

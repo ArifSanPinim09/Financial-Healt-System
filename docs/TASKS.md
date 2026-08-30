@@ -125,13 +125,13 @@
 - [x] Empty state: "Belum ada data submission" (ref: PRD Bab 16.6)
 
 ## Modul 15: Admin Submission Detail — Edit/Delete + Audit Log (F10)
-- [ ] Buat halaman detail `/admin/submission/:id` (ref: PRD Bab 16.7)
-- [ ] Tampilkan info nasabah, hasil ringkas, detail jawaban (ref: PRD Bab 16.7)
-- [ ] Tombol Edit: form untuk ubah nama/no HP/jawaban (ref: PRD Bab F10, 16.7)
-- [ ] Tombol Hapus: modal konfirmasi + soft-delete (deleted_at) (ref: PRD Bab F10, 12.3)
-- [ ] Implementasi audit log untuk setiap edit/delete (ref: PRD Bab 25)
-- [ ] Toast feedback: "Perubahan disimpan" / "Data berhasil dihapus" (ref: PRD Bab 16.7)
-- [ ] Unit test untuk AC9 (Admin Dashboard Access Control) (ref: PRD Bab 26)
+- [x] Buat halaman detail `/admin/submission/:id` (ref: PRD Bab 16.7)
+- [x] Tampilkan info nasabah, hasil ringkas, detail jawaban (ref: PRD Bab 16.7)
+- [x] Tombol Edit: form untuk ubah nama/no HP/jawaban (ref: PRD Bab F10, 16.7)
+- [x] Tombol Hapus: modal konfirmasi + soft-delete (deleted_at) (ref: PRD Bab F10, 12.3)
+- [x] Implementasi audit log untuk setiap edit/delete (ref: PRD Bab 25)
+- [x] Toast feedback: "Perubahan disimpan" / "Data berhasil dihapus" (ref: PRD Bab 16.7)
+- [x] Unit test untuk AC9 (Admin Dashboard Access Control) (ref: PRD Bab 26)
 
 ## Modul 16: Responsive & Accessibility Pass
 - [ ] Audit kontras warna (WCAG AA) (ref: PRD Bab 21)
@@ -183,4 +183,4 @@ Modul 1 (Setup) → Modul 2 (Supabase) → Modul 3 (Landing)
 
 ---
 
-*Terakhir diupdate: 2026-08-30 (Modul 9, 10, 11 selesai)*
+*Terakhir diupdate: 2026-08-30 (Modul 13, 14, 15 selesai)*
