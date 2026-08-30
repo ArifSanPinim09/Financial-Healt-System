@@ -5,10 +5,10 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 ## Ringkasan Modul
 | Modul | Status | Terakhir Update |
 |---|---|---|
-| Project & Supabase Setup | 🔴 | - |
+| Project & Supabase Setup | 🟡 | 2026-08-30 |
 | Landing Page | 🔴 | - |
 | Identity Capture & Pembatasan 1x | 🔴 | - |
-| Financial Rating Quiz + Scoring + KSM Gate | 🔴 | - |
+| Financial Rating Quiz + Scoring + KSM Gate | 🟡 | 2026-08-30 |
 | Financial Rating Result Page | 🔴 | - |
 | Financial Needs Quiz + Scoring + Tie-Breaker | 🔴 | - |
 | Financial Needs Result Page | 🔴 | - |
@@ -20,8 +20,9 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
-### [<tanggal>]
-- <apa yang dikerjakan>
-- Status: <selesai/in-progress/blocked>
-- Referensi PRD: <Bab X>
+### [2026-08-30]
+- Modul 1 selesai: setup deps (@supabase/supabase-js, @supabase/ssr, lucide-react, tsx), struktur lib/ (supabase client browser/server/admin, scoring engine rating + recommendation), env config.
+- Modul 6/7 (scoring engine) ikut diimplementasikan: rating.ts + recommendation.ts + 10 unit test lolos (AC1-AC5 + Path B/C/E).
+- Status: selesai (Modul 1), scoring engine siap (Modul 6/7)
+- Referensi PRD: Bab 5.1, 8.1, 8.2, 8.3, 14, 22, 23, 26
 - Commit: <hash>

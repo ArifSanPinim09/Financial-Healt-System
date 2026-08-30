@@ -5,11 +5,11 @@
 ---
 
 ## Modul 1: Project Setup
-- [ ] Setup Next.js App Router dengan Tailwind CSS (ref: PRD Bab 5.1)
-- [ ] Install Lucide Icons (ref: PRD Bab 5.1, 20)
-- [ ] Setup struktur folder sesuai arsitektur (ref: PRD Bab 14)
-- [ ] Konfigurasi environment variables (Supabase URL, anon key, service role key) (ref: PRD Bab 5.1, 23)
-- [ ] Setup Supabase client (browser & server) (ref: PRD Bab 22)
+- [x] Setup Next.js App Router dengan Tailwind CSS (ref: PRD Bab 5.1)
+- [x] Install Lucide Icons (ref: PRD Bab 5.1, 20)
+- [x] Setup struktur folder sesuai arsitektur (ref: PRD Bab 14)
+- [x] Konfigurasi environment variables (Supabase URL, anon key, service role key) (ref: PRD Bab 5.1, 23)
+- [x] Setup Supabase client (browser & server) (ref: PRD Bab 22)
 
 ## Modul 2: Supabase Setup
 - [ ] Buat tabel `question_bank` (ref: PRD Bab 12.1)
