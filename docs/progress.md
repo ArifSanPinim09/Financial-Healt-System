@@ -36,4 +36,4 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - TypeScript types diregenerasi (`__InternalSupabase` + Tables/TablesInsert/TablesUpdate helper).
 - ⚠️ Security fix: `SUPABASE_SERVICE_ROLE_KEY` asli ter-commit di `.env.example` pada commit 3c96f49 → dihapus dari file, diganti placeholder. **Key tetap terekspos di riwayat git → wajib rotate di Supabase Dashboard.**
 - Referensi PRD: Bab 5.1, 5.2, 12.1-12.8, 22, 23, 25, 31
-- Commit: <hash>
+- Commit: d858cee
