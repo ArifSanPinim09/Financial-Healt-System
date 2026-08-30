@@ -53,14 +53,14 @@
 - [x] Q13 (Financial Goal) & Q14 (Financial Need) non-scoring (ref: PRD Bab F3, 8.1)
 
 ## Modul 6: Scoring & Persona Engine (F4)
-- [ ] Implementasi perhitungan dimension raw score (rata-rata 2 soal) (ref: PRD Bab 8.1)
-- [ ] Implementasi weighted contribution (raw score × bobot) (ref: PRD Bab 8.1)
-- [ ] Implementasi final score = ROUND(sum contributions), clamp 0-100 (ref: PRD Bab 8.1)
-- [ ] Implementasi dimension health classification (Strong/Good/Improve/Priority) (ref: PRD Bab 8.1)
-- [ ] Implementasi persona mapping (Architect/Builder/Explorer/Adventurer/Starter) (ref: PRD Bab 8.1)
-- [ ] Implementasi readiness mapping (High/Medium/Low) (ref: PRD Bab 8.1)
-- [ ] Unit test untuk AC1 (perhitungan skor 77.75 → 78) (ref: PRD Bab 26)
-- [ ] Unit test untuk AC2 (persona THE BUILDER untuk skor 74) (ref: PRD Bab 26)
+- [x] Implementasi perhitungan dimension raw score (rata-rata 2 soal) (ref: PRD Bab 8.1)
+- [x] Implementasi weighted contribution (raw score × bobot) (ref: PRD Bab 8.1)
+- [x] Implementasi final score = ROUND(sum contributions), clamp 0-100 (ref: PRD Bab 8.1)
+- [x] Implementasi dimension health classification (Strong/Good/Improve/Priority) (ref: PRD Bab 8.1)
+- [x] Implementasi persona mapping (Architect/Builder/Explorer/Adventurer/Starter) (ref: PRD Bab 8.1)
+- [x] Implementasi readiness mapping (High/Medium/Low) (ref: PRD Bab 8.1)
+- [x] Unit test untuk AC1 (perhitungan skor 77.75 → 78) (ref: PRD Bab 26)
+- [x] Unit test untuk AC2 (persona THE BUILDER untuk skor 74) (ref: PRD Bab 26)
 
 ## Modul 7: KSM Gate & Recommendation Engine (F5)
 - [ ] Implementasi KSM Gate: Final Score ≥70 AND Cash Flow ≥60 AND Debt ≥60 AND Emergency Fund ≥40 (ref: PRD Bab 8.2)
@@ -183,4 +183,4 @@ Modul 1 (Setup) → Modul 2 (Supabase) → Modul 3 (Landing)
 
 ---
 
-*Terakhir diupdate: 2026-08-30 (Modul 5 selesai)*
+*Terakhir diupdate: 2026-08-30 (Modul 6 selesai)*

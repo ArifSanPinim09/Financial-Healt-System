@@ -20,8 +20,17 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
-### [2026-08-30]
-- Modul 1 selesai: setup deps (@supabase/supabase-js, @supabase/ssr, lucide-react, tsx), struktur lib/ (supabase client browser/server/admin, scoring engine rating + recommendation), env config.
+### [2026-08-30] Modul 6 (Scoring & Persona Engine) — SELESAI
+- Engine scoring Financial Rating (F4) lengkap di `lib/scoring/` (sudah diimplementasikan sejak Modul 1, diverifikasi & ditandai selesai di modul ini).
+- `constants.ts` (Bab 8.1): 6 dimensi berbobot (Cash Flow 25%, Debt Management 20%, Emergency Fund 20%, Saving Habit 15%, Investment Habit 10%, Financial Protection 10%), mapping question_id Q1-Q12 per dimensi, type DimensionStatus/Persona/Readiness/DimensionResult/RatingScoreResult.
+- `rating.ts` (Bab 8.1): `classifyDimension` (80+ STRONG, 65-79 GOOD, 40-64 IMPROVE, 0-39 PRIORITY), `classifyPersona` (85+ ARCHITECT, 70-84 BUILDER, 55-69 EXPLORER, 40-54 ADVENTURER, 0-39 STARTER), `classifyReadiness` (70+ HIGH, 55-69 MEDIUM, 0-54 LOW), `calculateRatingScore` — raw score = rata-rata 2 soal per dimensi, contribution = raw × bobot, final = ROUND(sum) clamp 0-100; Q13/Q14 tidak pernah masuk hitungan (non-scoring, hanya personalisasi).
+- `recommendation.ts` (Bab 8.2/8.3, dipakai Modul 7): `evaluateKsmGate` + `buildRatingRecommendation` Path A-E + Priority Rule — sudah diverifikasi di modul ini.
+- Unit test AC1 & AC2 (Bab 26): AC1 — jawaban (100,80)/(85,90)/(65,35)/(100,80)/(65,80)/(60,80) → final score 77.75 dibulatkan **78** ✓; AC2 — final score 74 → persona **THE BUILDER** ✓. Boundary test persona (85/70/55/40/39) & readiness (70/55/54).
+- Verifikasi: 17 unit test ✓ (10 scoring + 7 phone), typecheck ✓, lint ✓, build ✓.
+- Referensi PRD: Bab F4, 8.1, 8.2, 8.3, 26 (AC1, AC2)
+- Commit: <hash>
+
+### [2026-08-30] Modul 1 selesai: setup deps (@supabase/supabase-js, @supabase/ssr, lucide-react, tsx), struktur lib/ (supabase client browser/server/admin, scoring engine rating + recommendation), env config.
 - Modul 6/7 (scoring engine) ikut diimplementasikan: rating.ts + recommendation.ts + 10 unit test lolos (AC1-AC5 + Path B/C/E).
 - Status: selesai (Modul 1), scoring engine siap (Modul 6/7)
 - Referensi PRD: Bab 5.1, 8.1, 8.2, 8.3, 14, 22, 23, 26
