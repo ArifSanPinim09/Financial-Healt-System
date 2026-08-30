@@ -67,7 +67,7 @@ function AssessmentCard({
           <Icon className="h-[22px] w-[22px]" strokeWidth={1.8} aria-hidden />
         </span>
         <span
-          className="font-serif text-lg italic text-muted/60"
+          className="font-serif text-lg italic text-muted/90"
           aria-hidden
         >
           {index}

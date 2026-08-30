@@ -183,7 +183,7 @@ export default function IdentityForm({
             Lihat hasil kamu
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
-          <p className="mt-4 flex items-center gap-2 text-xs text-muted/80">
+          <p className="mt-4 flex items-center gap-2 text-xs text-muted/90">
             <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
             Mengalihkan otomatis dalam beberapa detik…
           </p>
@@ -274,12 +274,15 @@ export default function IdentityForm({
             role="alert"
             className="mt-5 flex items-start gap-3 rounded-2xl border border-error-line bg-error-tint p-4"
           >
-            <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-error" aria-hidden />
+            <WifiOff
+              className="mt-0.5 h-5 w-5 shrink-0 text-error-deep"
+              aria-hidden
+            />
             <div className="flex-1">
-              <p className="text-sm font-semibold text-error">
+              <p className="text-sm font-semibold text-error-deep">
                 Sepertinya ada gangguan.
               </p>
-              <p className="mt-0.5 text-[13px] leading-snug text-error-deep/80">
+              <p className="mt-0.5 text-[13px] leading-snug text-error-deep/70">
                 Data kamu aman dan tidak hilang. Silakan coba lagi ya.
               </p>
             </div>
@@ -289,7 +292,7 @@ export default function IdentityForm({
                 setCheckState("idle");
                 void runCheck();
               }}
-              className="shrink-0 rounded-full border border-error/30 px-3.5 py-1.5 text-xs font-semibold text-error transition-colors duration-200 hover:bg-error hover:text-white"
+              className="shrink-0 rounded-full border border-error-line bg-card px-3.5 py-2 text-xs font-semibold text-error-deep transition-colors duration-200 hover:bg-error hover:text-white"
             >
               Coba lagi
             </button>
@@ -314,7 +317,7 @@ export default function IdentityForm({
           )}
         </button>
 
-        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted">
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted/90">
           <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden />
           Hanya dipakai untuk follow-up assessment ini.
         </p>

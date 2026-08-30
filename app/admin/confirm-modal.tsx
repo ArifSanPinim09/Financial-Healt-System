@@ -2,11 +2,13 @@
 
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useFocusTrap } from "@/lib/utils/focus-trap";
 
 // Modal konfirmasi untuk aksi destruktif (hapus submission, Bab F10):
 // "Konfirmasi wajib sebelum hapus". Full-screen di mobile, kartu center
 // di desktop (Bab 19). Aksesibel: dialog + aria-modal, fokus ke tombol
-// pembatal (default aman), Escape & klik backdrop untuk menutup.
+// pembatal (default aman), fokus trap + restore (WCAG 2.4.3), Escape &
+// klik backdrop untuk menutup.
 
 export default function ConfirmModal({
   title,
@@ -23,7 +25,10 @@ export default function ConfirmModal({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
+
+  useFocusTrap(panelRef, true);
 
   useEffect(() => {
     cancelRef.current?.focus();
@@ -49,6 +54,7 @@ export default function ConfirmModal({
         tabIndex={-1}
       />
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-title"

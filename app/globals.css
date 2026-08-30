@@ -14,15 +14,16 @@
   --accent-tint: #e5efe9;
   --error: #b3402a;
   --error-deep: #8f3222;
-  --error-tint: #f9ece8;
+  --error-tint: #f7e4de;
   --error-line: #eccabf;
 
-  /* Status dimensi (Bab 20): hijau tua → hijau muda → amber → merah. */
+  /* Status dimensi (Bab 20): hijau tua → hijau muda → amber → merah.
+     Nilai teks dipilih agar kontras >= 4.5:1 (WCAG AA) di atas tint-nya. */
   --strong: #1c6b4d;
   --strong-tint: #e2f1e8;
-  --good: #4a8b3f;
+  --good: #2f6b28;
   --good-tint: #e9f3e1;
-  --improve: #9a6b0e;
+  --improve: #7a5206;
   --improve-tint: #f6edd7;
   --priority: #b3402a;
   --priority-tint: #f9ece8;

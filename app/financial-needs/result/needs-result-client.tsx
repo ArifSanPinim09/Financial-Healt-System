@@ -460,7 +460,7 @@ function ResultView({
           <ScoreBar label="KPR" value={r.kprScore} />
           <ScoreBar label="KKB" value={r.kkbScore} />
         </div>
-        <p className="mt-3 text-xs text-muted/80">
+        <p className="mt-3 text-xs text-muted/90">
           Skor dihitung dari seluruh jawabanmu — makin tinggi, makin relevan.
         </p>
       </section>
@@ -514,7 +514,7 @@ function ResultView({
         </p>
       )}
 
-      <p className="text-center text-xs text-muted/80">
+      <p className="text-center text-xs text-muted">
         Tim kami akan menemanimu melangkah lebih lanjut lewat WhatsApp.
       </p>
     </div>

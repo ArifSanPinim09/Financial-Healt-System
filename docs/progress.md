@@ -16,10 +16,25 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | Admin Login | 🟢 | 2026-08-30 |
 | Admin Dashboard | 🟢 | 2026-08-30 |
 | Admin Detail (Edit/Delete + Audit Log) | 🟢 | 2026-08-30 |
-| Responsive & Accessibility | 🔴 | - |
+| Responsive & Accessibility | 🟢 | 2026-08-30 |
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-30] Modul 16 (Responsive & Accessibility Pass) — SELESAI
+- **Audit kontras WCAG AA** (Bab 21) — hitung rasio semua token via script (relative luminance), lalu perbaiki yang gagal 4.5:1 untuk teks normal:
+  - Token status dimensi: `--good` `#4a8b3f→#2f6b28` (3.63→**5.65** di atas `good-tint`), `--improve` `#9a6b0e→#7a5206` (4.02→**5.93** di atas `improve-tint`). `strong` (5.52) & `priority` (4.94) sudah lolos.
+  - `--error-tint` `#f9ece8→#f7e4de` agar `error` di atasnya 4.94→**4.64** & `error-deep` 6.87→**6.46** (tetap lolos). `--error-line` dikembalikan ke `#eccabf` (ternyata menggelapkan line justru menurunkan kontras text-error-on-line — solusi final: teks tombol outline error diganti `error-deep`).
+  - Tombol "Coba lagi" di banner error identity-form: `text-error` di atas `error-tint`+border `error-line` (3.74) → `text-error-deep` di atas `bg-card`+border `error-line` (6.46), icon+judul banner juga `error-deep` (konsisten dgn pola tombol error admin).
+  - Caption kecil: semua `text-muted/80` (3.78) → `text-muted/90` (4.61 di atas card) untuk teks 12-13px; `/100` label `muted/70`→`muted/90`; index kartu landing `muted/75`→`muted/90` (axe menilainya walau `aria-hidden`); caption paling bawah NEEDS result di atas `bg-paper` → `text-muted` penuh (5.26). Placeholder `muted/50` dibiarkan (bukan kriteria AA, dan sengaja redup agar tak terlihat seperti nilai terisi).
+- **Dialog a11y (WCAG 2.4.3 focus order + focus management)**: helper baru `lib/utils/focus-trap.ts` — `useFocusTrap(ref, active)`: Tab/Shift+Tab terjebak di dalam dialog (wrap first↔last), fokus **restore ke elemen pemicu** saat dialog ditutup. Dipasang di `ConfirmModal` (modal hapus — fokus awal tetap tombol Batal, default aman) & `FilterSheet` (bottom sheet filter mobile). `FilterSheet` juga dapat `aria-labelledby` ke heading (sebelumnya `aria-label` saja) + backdrop `tabIndex={-1}`.
+- **A11y misc**:
+  - `Toast`: tambah `aria-live="polite" aria-atomic="true"` (muncul dinamis), tombol "Tutup" diperbesar (h-8 min-w-8, target sentuh lebih baik).
+  - Badge filter mobile: `aria-label` kini menyebut angka ("Buka filter, N filter aktif") + badge `aria-hidden` (angka dibaca lewat label).
+  - Result pages: heading semantics — RATING eyebrow "Hasil kamu · {nama}" jadi `<h1>` (sebelumnya tidak ada h1 sama sekali → axe `page-has-heading-one`); NEEDS tetap `<p>` karena h1 utama = "KSM atau KPR" (hindari 2 h1).
+- **Verifikasi otomatis**: 40 unit test ✓, typecheck ✓, lint ✓ (0 error, 1 warning pre-existing di generated file), build ✓ (15 route). **axe-core audit (agent-browser a11y, WCAG 2.0/2.1 AA + best practice)**: landing 0 violation, quiz RATING/NEEDS 0, result RATING 0, result NEEDS 0, dashboard admin 0, login 0 (termasuk state error form), detail submission 0 (view & edit mode), modal hapus & filter sheet 0. **Browser E2E**: keyboard quiz (Tab pilih radio asli → Enter "Lanjut" → "Kembali" pertahankan jawaban); filter sheet mobile 390px (buka → Tab trap di dalam dialog → Escape tutup → fokus balik ke tombol "Buka filter"); modal hapus (fokus awal "Batal" → Tab wrap → Escape → fokus balik ke "Hapus"); login/logout admin; halaman detail & result render benar. Semua kriteria Modul 16 (Bab 19/20/21) terpenuhi — mayoritas sudah ada sejak modul sebelumnya (sticky button mobile, bottom sheet filter, radio asli, label terhubung, error icon+teks, body 16px, tap ≥44px), pass ini memverifikasi & menutup gap.
+- Referensi PRD: Bab 19, 20, 21, 24 (a11y & responsive)
+- Commit: (menyusul)
+
 ### [2026-08-30] Modul 15 (Admin Detail — Edit/Delete + Audit Log) — SELESAI
 - `/api/submissions/[id]` (Bab 22, F10 — wajib `requireAdmin()`, selain itu 401):
   - `GET`: detail lengkap 1 submission — data nasabah + hasil ringkas, 14/10 pertanyaan + opsi + jawaban terpilih, `dimension_result` (RATING), riwayat `submission_audit_log` (max 50, nama admin via email). 404 bila tidak ada / sudah dihapus / ID bukan UUID.

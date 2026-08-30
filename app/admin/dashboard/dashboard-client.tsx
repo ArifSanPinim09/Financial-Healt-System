@@ -22,6 +22,7 @@ import {
   formatDateTime,
   personaLabel,
 } from "@/app/admin/ui/format";
+import { useFocusTrap } from "@/lib/utils/focus-trap";
 
 // Dashboard admin — list & filter submission (F10, Bab 16.6 & 18).
 // - Data: GET /api/submissions (admin session, filter/search/sort/pagination).
@@ -274,12 +275,19 @@ export default function DashboardClient({ email }: { email: string | null }) {
               type="button"
               onClick={openSheet}
               className="relative flex h-12 items-center justify-center gap-2 rounded-2xl border border-line bg-paper/70 px-5 text-sm font-semibold text-ink transition-colors duration-200 hover:border-accent hover:text-accent-deep md:hidden"
-              aria-label={`Buka filter${activeCount > 0 ? ` (${activeCount} aktif)` : ""}`}
+              aria-label={
+                activeCount > 0
+                  ? `Buka filter, ${activeCount} filter aktif`
+                  : "Buka filter"
+              }
             >
               <SlidersHorizontal className="h-[18px] w-[18px]" aria-hidden />
               Filter
               {activeCount > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-[11px] font-bold text-white">
+                <span
+                  aria-hidden
+                  className="absolute -right-1.5 -top-1.5 flex h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-[11px] font-bold text-white"
+                >
                   {activeCount}
                 </span>
               )}
@@ -485,6 +493,8 @@ function FilterSheet({
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
+  useFocusTrap(panelRef, true);
+
   useEffect(() => {
     panelRef.current?.focus();
   }, []);
@@ -496,17 +506,21 @@ function FilterSheet({
         aria-label="Tutup filter"
         onClick={onClose}
         className="backdrop-in absolute inset-0 bg-ink/45"
+        tabIndex={-1}
       />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Filter submission"
+        aria-labelledby="filter-sheet-title"
         tabIndex={-1}
         className="sheet-in relative z-10 flex max-h-[88dvh] w-full flex-col rounded-t-[1.75rem] border-t border-line bg-card p-6 outline-none sm:max-w-md sm:rounded-[1.75rem] sm:border"
       >
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-xl font-semibold tracking-tight text-ink">
+          <h2
+            id="filter-sheet-title"
+            className="font-serif text-xl font-semibold tracking-tight text-ink"
+          >
             Filter submission
           </h2>
           <button
@@ -595,7 +609,7 @@ function SummaryBlock({ item }: { item: SubmissionItem }) {
           </span>
           <span className="text-sm font-semibold text-muted">
             {item.finalScore ?? "—"}
-            <span className="text-xs font-medium text-muted/70">/100</span>
+            <span className="text-xs font-medium text-muted/90">/100</span>
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
@@ -688,7 +702,7 @@ function ResultsTable({
                 </td>
                 <td className="px-4 py-4">
                   <ChevronRight
-                    className="h-4 w-4 text-muted/50 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-accent"
+                    className="h-4 w-4 text-muted/60 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-accent"
                     aria-hidden
                   />
                 </td>
@@ -715,7 +729,7 @@ function ResultsTable({
                     {displayPhone(item.customerPhone)}
                   </p>
                 </div>
-                <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted/50" aria-hidden />
+                <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted/60" aria-hidden />
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <AssessmentChip type={item.assessmentType} />

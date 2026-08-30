@@ -428,7 +428,7 @@ export default function DetailClient({
                     </span>
                   </div>
                   {s.updatedAt && (
-                    <p className="mt-3 text-xs font-medium text-muted/80">
+                    <p className="mt-3 text-xs font-medium text-muted/90">
                       Terakhir diubah admin: {formatDateTime(s.updatedAt)}
                     </p>
                   )}
@@ -667,7 +667,7 @@ function DimensionMini({ dim }: { dim: Dimension }) {
       </div>
       <p className="mt-2 text-xs font-semibold text-ink">
         {dim.rawScore}
-        <span className="font-medium text-muted/70">/100</span>
+        <span className="font-medium text-muted/90">/100</span>
       </p>
     </div>
   );
@@ -953,7 +953,7 @@ function EditView({
                 {phoneError}
               </p>
             ) : (
-              <p className="mt-2 text-xs text-muted/80">
+              <p className="mt-2 text-xs text-muted/90">
                 Format: 08xx atau +62 8xx
               </p>
             )}
@@ -980,7 +980,7 @@ function EditView({
                 {q.questionText}
               </p>
               {!q.isScoring && (
-                <p className="mt-1 text-xs font-medium text-muted/80">
+                <p className="mt-1 text-xs font-medium text-muted/90">
                   Tidak memengaruhi skor (hanya catatan).
                 </p>
               )}

@@ -57,9 +57,10 @@ export function Toast({
       }`}
       role="status"
       aria-live="polite"
+      aria-atomic="true"
     >
       <div
-        className={`flex items-center gap-3 rounded-full border bg-card py-3 pl-4 pr-5 shadow-[0_18px_40px_-18px_rgba(15,29,28,0.45)] ${
+        className={`flex items-center gap-3 rounded-full border bg-card py-3 pl-4 pr-3 shadow-[0_18px_40px_-18px_rgba(15,29,28,0.45)] ${
           isSuccess ? "border-accent/30" : "border-error-line"
         }`}
       >
@@ -86,7 +87,7 @@ export function Toast({
         <button
           type="button"
           onClick={onDismiss}
-          className="ml-1 text-xs font-medium text-muted transition-colors hover:text-ink"
+          className="ml-1 flex h-8 min-w-8 items-center justify-center rounded-full px-2 text-xs font-medium text-muted transition-colors hover:bg-paper hover:text-ink"
           aria-label="Tutup notifikasi"
         >
           Tutup

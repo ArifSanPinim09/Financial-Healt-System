@@ -488,9 +488,9 @@ function ResultView({
 
   return (
     <div className="space-y-6">
-      <p className="reveal-up ad-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-deep">
+      <h1 className="reveal-up ad-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-deep">
         Hasil kamu · {firstName(data.customerName)}
-      </p>
+      </h1>
 
       {/* Mobile: stack · Desktop: skor+persona kiri, grid dimensi kanan */}
       <div className="grid items-start gap-6 md:grid-cols-2 md:gap-8">
@@ -564,7 +564,7 @@ function ResultView({
           </p>
         )}
 
-        <p className="mt-4 text-xs text-muted/80">
+        <p className="mt-4 text-xs text-muted/90">
           Tim kami akan menemanimu melangkah lebih lanjut lewat WhatsApp.
         </p>
       </section>

@@ -352,7 +352,7 @@ export default function QuizEngine({
             {type === "NEEDS" ? "Lihat rekomendasi kamu" : "Lihat hasil kamu"}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
-          <p className="mt-4 text-xs text-muted/80">
+          <p className="mt-4 text-xs text-muted/90">
             Tim cabang bisa menghubungimu lewat WhatsApp setelah ini.
           </p>
         </div>

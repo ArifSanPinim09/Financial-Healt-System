@@ -232,7 +232,7 @@ export default function LoginClient() {
             )}
           </button>
 
-          <p className="mt-4 text-center text-xs leading-relaxed text-muted/80">
+          <p className="mt-4 text-center text-xs leading-relaxed text-muted/90">
             Hanya untuk admin cabang. Aktivitas masuk dan perubahan data
             tercatat.
           </p>
