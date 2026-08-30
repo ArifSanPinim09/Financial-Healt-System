@@ -1,26 +1,132 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f4ef;
+  --foreground: #0f1d1c;
+
+  --paper: #f6f4ef;
+  --card: #ffffff;
+  --ink: #0f1d1c;
+  --muted: #5a6963;
+  --line: #e4e0d7;
+  --accent: #0e7a68;
+  --accent-deep: #0a5648;
+  --accent-tint: #e5efe9;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-tint: var(--accent-tint);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-fraunces);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- Latar ambient ---------- */
+.bg-dots {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--ink) 10%, transparent) 1px,
+    transparent 1.4px
+  );
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(to bottom, black 15%, transparent 90%);
+  mask-image: linear-gradient(to bottom, black 15%, transparent 90%);
+}
+
+.glow {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--accent) 15%, transparent),
+    transparent 72%
+  );
+}
+
+/* ---------- Animasi entrance ---------- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes line-rise {
+  from {
+    transform: translateY(118%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-70px, 55px, 0) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-up {
+    opacity: 0;
+    animation: rise-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .reveal-line {
+    transform: translateY(118%);
+    animation: line-rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .glow {
+    animation: drift 24s ease-in-out infinite alternate;
+  }
+}
+
+/* Delay stagger — dipakai bersama .reveal-up / .reveal-line */
+.ad-1 {
+  animation-delay: 0.05s;
+}
+.ad-2 {
+  animation-delay: 0.14s;
+}
+.ad-3 {
+  animation-delay: 0.23s;
+}
+.ad-4 {
+  animation-delay: 0.32s;
+}
+.ad-5 {
+  animation-delay: 0.42s;
+}
+.ad-6 {
+  animation-delay: 0.52s;
 }

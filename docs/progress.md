@@ -6,7 +6,7 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | Modul | Status | Terakhir Update |
 |---|---|---|
 | Project & Supabase Setup | 🟢 | 2026-08-30 |
-| Landing Page | 🔴 | - |
+| Landing Page | 🟢 | 2026-08-30 |
 | Identity Capture & Pembatasan 1x | 🔴 | - |
 | Financial Rating Quiz + Scoring + KSM Gate | 🟡 | 2026-08-30 |
 | Financial Rating Result Page | 🔴 | - |
@@ -37,3 +37,12 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - ⚠️ Security fix: `SUPABASE_SERVICE_ROLE_KEY` asli ter-commit di `.env.example` pada commit 3c96f49 → dihapus dari file, diganti placeholder. **Key tetap terekspos di riwayat git → wajib rotate di Supabase Dashboard.**
 - Referensi PRD: Bab 5.1, 5.2, 12.1-12.8, 22, 23, 25, 31
 - Commit: d858cee
+
+### [2026-08-30] Modul 3 (Landing Page) — SELESAI
+- Halaman landing `/` (static, prerendered): header wordmark "Livin'" + badge Demo, hero (eyebrow + heading serif + copy hangat + trust signals), 2 kartu assessment setara (Financial Health Score → `/financial-health/quiz`, Kebutuhan Kredit → `/financial-needs/quiz`), footer dark + disclaimer demo.
+- Design system (Bab 20): palet netral warm paper + aksen teal dalam (2 warna saja), wordmark teks, Fraunces (serif display) + Geist (body), radius konsisten, shadow minimal, Lucide Icons (Gauge/Compass/Clock/FileQuestion/ShieldCheck/ArrowRight), tanpa emoji.
+- Animasi (CSS murni, hormat `prefers-reduced-motion`): line-mask reveal heading (3 baris staggered), rise-in staggered per section (header → hero → trust → kartu → footer), glow teal ambient drift, hover kartu (lift + icon tilt + arrow slide + underline expand).
+- Sesuai F1/16.1: 2 kartu setara (tidak ada yang didahulukan), mobile = stack vertikal / desktop = berdampingan max-width + stagger offset, kartu = icon + judul + deskripsi 1 kalimat + CTA, tap target besar (seluruh kartu clickable). A11y: kontras WCAG AA, body ≥16px (Bab 21), focus-visible outline.
+- Verifikasi: typecheck ✓, lint ✓ (0 error), build ✓ (static), screenshot desktop (1440px) + mobile (390px) diverifikasi visual.
+- Referensi PRD: Bab F1, 16.1, 15, 19, 20, 21, 24
+- Commit: <hash>

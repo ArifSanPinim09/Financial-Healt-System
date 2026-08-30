@@ -31,9 +31,9 @@
 - [x] Generate TypeScript types dari schema (ref: PRD Bab 5.2)
 
 ## Modul 3: Landing Page (F1)
-- [ ] Buat halaman landing `/` dengan 2 kartu pilihan assessment (ref: PRD Bab 16.1, F1)
-- [ ] Styling mobile-first dengan Tailwind (ref: PRD Bab 19, 20)
-- [ ] Kartu: icon + judul + deskripsi + CTA (ref: PRD Bab 16.1)
+- [x] Buat halaman landing `/` dengan 2 kartu pilihan assessment (ref: PRD Bab 16.1, F1)
+- [x] Styling mobile-first dengan Tailwind (ref: PRD Bab 19, 20)
+- [x] Kartu: icon + judul + deskripsi + CTA (ref: PRD Bab 16.1)
 
 ## Modul 4: Identity Capture + Pembatasan 1x Isi (F13, F14)
 - [ ] Buat form identitas (nama, nomor HP) di awal quiz (ref: PRD Bab F13, 16.2)
