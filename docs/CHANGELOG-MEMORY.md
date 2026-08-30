@@ -11,3 +11,8 @@ Format entry:
 ```
 
 ---
+
+## [2026-08-30 20:45] Setup awal: AGENTS.md, progress.md, task planning
+- Commit: 29af3db
+- Deskripsi: Commit pertama project. Menetapkan konvensi (docs/, AGENTS.md), membuat planning task granular (TASKS.md, 116 task / 17 modul), template progress, dan memory log. Menyesuaikan AGENTS.md lama (808 baris template generik) menjadi versi ringkas berisi business rules kunci PRD.
+- File terdampak: AGENTS.md, docs/TASKS.md, docs/progress.md, docs/CHANGELOG-MEMORY.md
