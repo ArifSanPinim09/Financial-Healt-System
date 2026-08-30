@@ -4,6 +4,7 @@ import {
   DIMENSION_KEY_TO_LABEL,
   type DimensionKey,
 } from "@/lib/scoring/constants";
+import { needsConfidenceFromDb } from "@/lib/submissions/compute";
 
 // GET /api/result?id=<submission_id> — hasil assessment (F6 / F9).
 // Publik, tapi query lewat service-role di server karena RLS melarang read
@@ -69,7 +70,11 @@ export async function GET(request: Request) {
       result: {
         primaryRecommendation: data.primary_recommendation,
         secondaryRecommendation: data.secondary_recommendation,
-        recommendationConfidence: data.recommendation_confidence,
+        // DB menyimpan "MODERATE" untuk NEEDS (enum Bab 12.3) — kembalikan
+        // bentuk engine "RECOMMENDATION" untuk copy halaman hasil (Bab 8.5).
+        recommendationConfidence:
+          needsConfidenceFromDb(data.recommendation_confidence) ??
+          data.recommendation_confidence,
         ksmScore: data.ksm_score ?? 0,
         kprScore: data.kpr_score ?? 0,
         kkbScore: data.kkb_score ?? 0,

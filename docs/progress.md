@@ -14,12 +14,26 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | Financial Needs Result Page | 🟢 | 2026-08-30 |
 | CTA WhatsApp Round-Robin | 🟢 | 2026-08-30 |
 | Admin Login | 🟢 | 2026-08-30 |
-| Admin Dashboard | 🔴 | - |
+| Admin Dashboard | 🟢 | 2026-08-30 |
 | Admin Detail (Edit/Delete + Audit Log) | 🔴 | - |
 | Responsive & Accessibility | 🔴 | - |
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-30] Modul 14 (Admin Dashboard — List & Filter) — SELESAI
+- `GET /api/submissions` (Bab 22, admin — wajib session `requireAdmin()`, selain itu 401): list submission untuk dashboard (Bab 16.6, 18).
+  - Filter: `type` (RATING/NEEDS), `recommendation` (whitelist 7 nilai), `date_from`/`date_to` (YYYY-MM-DD, diartikan hari WIB UTC+7 — assumption demo), `q` search nama/nomor HP (ilike, karakter khusus PostgREST disanitasi).
+  - Sorting: `date_desc` (default) / `date_asc` / `score_desc` / `score_asc`. Skor = `final_score` (RATING) atau skor kategori dari rekomendasi utama (NEEDS) — sort skor diambil semua yang cocok lalu di-sort server (cap 1000, jauh di atas volume demo Bab 24).
+  - Pagination: `limit` default 20, maks 25 (Bab 18), `page`; response `{items, total, page, limit, totalPages}`. Input invalid → 400 `INVALID_INPUT`.
+  - **Baris soft-deleted (`deleted_at` terisi) tidak pernah muncul** (Bab 18). Data via service role (RLS read submission hanya untuk authenticated — tetap ditegakkan dua lapis).
+- `lib/submissions/compute.ts` (murni, testable — dipakai Modul 15 & hasil): `validatePickedAnswers` (aturan AC10 identik submit), `recalculateRating`/`recalculateNeeds` (skor dihitung ulang dari DB dengan engine yang sama persis, deterministik Bab 24), `needsConfidenceForDb/FromDb` (enum DB Bab 12.3 hanya STRONG/MODERATE/DUAL/NONE — "RECOMMENDATION" disimpan "MODERATE", dikembalikan saat dibaca).
+- `app/api/result/route.ts` (fix kecil): confidence NEEDS kini dipetakan kembali "MODERATE"→"RECOMMENDATION" agar copy halaman hasil konsisten dengan engine (Bab 8.5).
+- `app/admin/dashboard/` (Bab 16.6, 19): `page.tsx` (server component — `requireAdmin()` gagal → **redirect `/admin/login`**, AC9) + `dashboard-client.tsx`: header + topbar, search (debounce), filter jenis/rekomendasi/rentang tanggal/urutan, tabel desktop (NAMA/KONTAK, JENIS, TANGGAL, HASIL RINGKAS — chip persona/skor/rekomendasi) + **card list mobile** (390px), pagination "Menampilkan X–Y dari N", empty state "Belum ada data submission".
+- `app/admin/topbar.tsx` + `app/admin/ui/{chips,format}.tsx`: topbar admin (wordmark, email, Keluar + state logging-out) & komponen chip/format tanggal-WIB. `globals.css`: keyframes `sheet-in`/`fade-in` (bottom sheet filter mobile + backdrop, hormat reduced-motion).
+- Verifikasi: 40 unit test ✓ (termasuk AC9 + audit), typecheck ✓, lint ✓, build ✓ (15 route). **API E2E 16 kasus list ✓**: struktur/field utuh, filter type/recommendation/rentang tanggal (termasuk kosong→0), search nama & nomor, sort score_desc menurun, limit 25, pagination tanpa overlap, 400 input invalid, 401 tanpa auth. **Browser E2E ✓**: login → dashboard, search menyaring 1 baris, mobile 390px = card list. (Lengkapnya: 51/51 check API E2E lintas Modul 13–15, detail di entry Modul 15.)
+- Referensi PRD: Bab F10, 16.6, 18, 19, 22, 23, 26 (AC9)
+- Commit: (menyusul)
+
 ### [2026-08-30] Modul 13 (Admin Login) — SELESAI
 - `app/admin/login/` (F11, Bab 16.5): halaman `/admin/login` — `page.tsx` (server component, panggil `requireAdmin()`: sudah login sebagai admin → langsung redirect ke `/admin/dashboard`, form tidak tampil) + `login-client.tsx` (form email + password, icon field, toggle tampilkan password, state "Memeriksa kredensial…").
 - Autentikasi: `signInWithPassword` Supabase Auth **langsung dari browser** (Bab 22 — tanpa endpoint custom; rate-limit login bawaan Supabase). Setelah sukses → `router.replace(next)` + `refresh()`.

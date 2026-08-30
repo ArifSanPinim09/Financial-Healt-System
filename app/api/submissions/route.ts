@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildRatingRecommendation } from "@/lib/scoring/recommendation";
 import { calculateRatingScore } from "@/lib/scoring/rating";
@@ -12,6 +13,10 @@ import {
   sumNeedsScores,
   type NeedsRecommendation,
 } from "@/lib/scoring/needs";
+import {
+  needsConfidenceForDb,
+  needsConfidenceFromDb,
+} from "@/lib/submissions/compute";
 import { normalizeIndonesianPhone } from "@/lib/utils/phone";
 
 // POST /api/submissions — Bab 22 (publik), AC10, Bab 23.
@@ -107,6 +112,208 @@ function resultFromCalculation(
     })),
   };
 }
+
+// ---------------------------------------------------------------------------
+// GET /api/submissions — Bab 22 (admin, Supabase session), Bab 16.6 & 18.
+// List submission untuk dashboard admin: filter (jenis, rentang tanggal,
+// rekomendasi), search (nama/nomor HP), sorting (tanggal/skor), pagination.
+// Data soft-deleted (deleted_at terisi) tidak pernah muncul (Bab 18).
+// ---------------------------------------------------------------------------
+
+const LIST_COLUMNS =
+  "submission_id, customer_name, customer_phone, assessment_type, submitted_at, final_score, persona, readiness, ksm_gate, ksm_score, kpr_score, kkb_score, primary_recommendation, secondary_recommendation, recommendation_confidence" as const;
+
+const RECOMMENDATION_VALUES = [
+  "KSM",
+  "KPR",
+  "KKB",
+  "CASA",
+  "LIVIN",
+  "DEBT_ADVICE",
+  "FINANCIAL_ADVICE",
+] as const;
+
+type SortMode = "date_desc" | "date_asc" | "score_desc" | "score_asc";
+const SORT_MODES: SortMode[] = ["date_desc", "date_asc", "score_desc", "score_asc"];
+
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 25; // Bab 18: 20–25 baris/halaman
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+// "Skor" untuk sorting (Bab 18): RATING = final_score; NEEDS = skor kategori
+// dari rekomendasi utama (skala keduanya memang berbeda — disort apa adanya).
+function scoreOf(row: {
+  assessment_type: string;
+  final_score: number | null;
+  ksm_score: number | null;
+  kpr_score: number | null;
+  kkb_score: number | null;
+  primary_recommendation: string;
+}): number {
+  if (row.assessment_type === "RATING") return row.final_score ?? 0;
+  const byProduct: Record<string, number | null> = {
+    KSM: row.ksm_score,
+    KPR: row.kpr_score,
+    KKB: row.kkb_score,
+  };
+  const primary = byProduct[row.primary_recommendation] ?? null;
+  if (primary != null) return primary;
+  return Math.max(row.ksm_score ?? 0, row.kpr_score ?? 0, row.kkb_score ?? 0);
+}
+
+function parsePositiveInt(value: string | null, fallback: number, max: number) {
+  if (!value) return fallback;
+  const n = Number.parseInt(value, 10);
+  if (!Number.isFinite(n) || n < 1) return fallback;
+  return Math.min(n, max);
+}
+
+export async function GET(request: Request) {
+  // AC9 + Bab 23: wajib session admin (JWT) — selain itu 401, tanpa data.
+  const admin = await requireAdmin();
+  if (!admin) {
+    return errorResponse(401, "UNAUTHORIZED", "Masuk sebagai admin dulu ya.");
+  }
+
+  const params = new URL(request.url).searchParams;
+  const qRaw = (params.get("q") ?? "").trim();
+  const type = params.get("type");
+  const recommendation = params.get("recommendation");
+  const dateFrom = params.get("date_from");
+  const dateTo = params.get("date_to");
+  const sortRaw = params.get("sort") ?? "date_desc";
+  const limit = parsePositiveInt(params.get("limit"), DEFAULT_LIMIT, MAX_LIMIT);
+  const page = parsePositiveInt(params.get("page"), 1, 1_000_000);
+
+  if (type && type !== "RATING" && type !== "NEEDS") {
+    return errorResponse(400, "INVALID_INPUT", "Jenis assessment tidak dikenal.");
+  }
+  if (recommendation && !RECOMMENDATION_VALUES.includes(recommendation as (typeof RECOMMENDATION_VALUES)[number])) {
+    return errorResponse(400, "INVALID_INPUT", "Jenis rekomendasi tidak dikenal.");
+  }
+  if ((dateFrom && !DATE_PATTERN.test(dateFrom)) || (dateTo && !DATE_PATTERN.test(dateTo))) {
+    return errorResponse(400, "INVALID_INPUT", "Format tanggal tidak valid (YYYY-MM-DD).");
+  }
+  if (!SORT_MODES.includes(sortRaw as SortMode)) {
+    return errorResponse(400, "INVALID_INPUT", "Mode sorting tidak dikenal.");
+  }
+  const sort = sortRaw as SortMode;
+
+  const supabase = createAdminClient();
+
+  // Semua query list wajib exclude soft-deleted (Bab 18). Chain filter yang
+  // sama dipakai dua kali: untuk hitung total (head) dan untuk ambil baris.
+  function buildFilteredSelect(options?: { head?: boolean; count?: "exact" }) {
+    let q = supabase
+      .from("submission")
+      .select(LIST_COLUMNS, options)
+      .is("deleted_at", null);
+    if (type) q = q.eq("assessment_type", type);
+    if (recommendation) q = q.eq("primary_recommendation", recommendation);
+    if (dateFrom) {
+      // Batas tanggal diartikan sebagai hari lokal (WIB, UTC+7) agar sesuai
+      // intuisi admin Indonesia (assumption demo — server Vercel jalan di UTC).
+      q = q.gte("submitted_at", `${dateFrom}T00:00:00+07:00`);
+    }
+    if (dateTo) {
+      q = q.lte("submitted_at", `${dateTo}T23:59:59.999+07:00`);
+    }
+    if (qRaw) {
+      // Sanitasi: buang karakter khusus filter PostgREST agar input aman.
+      const term = qRaw.replace(/[%(),*]/g, "");
+      if (term) {
+        q = q.or(`customer_name.ilike.%${term}%,customer_phone.ilike.%${term}%`);
+      }
+    }
+    return q;
+  }
+
+  const { count, error: countError } = await buildFilteredSelect({
+    count: "exact",
+    head: true,
+  });
+  if (countError) {
+    console.error("[submissions:GET] gagal hitung total:", countError);
+    return errorResponse(500, "INTERNAL", "Gagal memuat data. Silakan coba lagi.");
+  }
+  const total = count ?? 0;
+
+  const isScoreSort = sort === "score_desc" || sort === "score_asc";
+
+  let rows: ListRow[];
+  if (isScoreSort) {
+    // Sorting skor: RATING & NEEDS memakai kolom berbeda (final_score vs
+    // skor kategori) — untuk skala demo, ambil semua yang cocok lalu sort
+    // di server (cap 1000 baris, jauh di atas volume demo Bab 24).
+    const { data, error } = await buildFilteredSelect()
+      .order("submitted_at", { ascending: false, nullsFirst: false })
+      .limit(1000);
+    if (error || !data) {
+      console.error("[submissions:GET] gagal ambil baris:", error);
+      return errorResponse(500, "INTERNAL", "Gagal memuat data. Silakan coba lagi.");
+    }
+    const sorted = [...(data as ListRow[])].sort((a, b) => {
+      const diff = scoreOf(a) - scoreOf(b);
+      return sort === "score_desc" ? -diff : diff;
+    });
+    rows = sorted.slice((page - 1) * limit, page * limit);
+  } else {
+    const from = (page - 1) * limit;
+    const { data, error } = await buildFilteredSelect()
+      .order("submitted_at", {
+        ascending: sort === "date_asc",
+        nullsFirst: false,
+      })
+      .range(from, from + limit - 1);
+    if (error || !data) {
+      console.error("[submissions:GET] gagal ambil baris:", error);
+      return errorResponse(500, "INTERNAL", "Gagal memuat data. Silakan coba lagi.");
+    }
+    rows = data as ListRow[];
+  }
+
+  return NextResponse.json({
+    items: rows.map((row) => ({
+      submissionId: row.submission_id,
+      customerName: row.customer_name,
+      customerPhone: row.customer_phone,
+      assessmentType: row.assessment_type,
+      submittedAt: row.submitted_at,
+      finalScore: row.final_score,
+      persona: row.persona,
+      readiness: row.readiness,
+      ksmGate: row.ksm_gate,
+      ksmScore: row.ksm_score,
+      kprScore: row.kpr_score,
+      kkbScore: row.kkb_score,
+      primaryRecommendation: row.primary_recommendation,
+      secondaryRecommendation: row.secondary_recommendation,
+      recommendationConfidence: row.recommendation_confidence,
+    })),
+    total,
+    page,
+    limit,
+    totalPages: Math.max(1, Math.ceil(total / limit)),
+  });
+}
+
+type ListRow = {
+  submission_id: string;
+  customer_name: string;
+  customer_phone: string;
+  assessment_type: string;
+  submitted_at: string | null;
+  final_score: number | null;
+  persona: string | null;
+  readiness: string | null;
+  ksm_gate: boolean | null;
+  ksm_score: number | null;
+  kpr_score: number | null;
+  kkb_score: number | null;
+  primary_recommendation: string;
+  secondary_recommendation: string | null;
+  recommendation_confidence: string;
+};
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -530,7 +737,11 @@ async function handleNeedsSubmission(
       kkb_score: result.kkbScore,
       primary_recommendation: result.primaryRecommendation,
       secondary_recommendation: result.secondaryRecommendation,
-      recommendation_confidence: result.recommendationConfidence,
+      // Enum DB (Bab 12.3) tidak mengenal "RECOMMENDATION" — disimpan sebagai
+      // "MODERATE" (lihat needsConfidenceForDb).
+      recommendation_confidence: needsConfidenceForDb(
+        result.recommendationConfidence,
+      ),
       submitted_at: now,
     })
     .select("submission_id")
@@ -600,7 +811,11 @@ async function findExistingNeedsSubmission(
     result: {
       primaryRecommendation: row.primary_recommendation,
       secondaryRecommendation: row.secondary_recommendation,
-      recommendationConfidence: row.recommendation_confidence,
+      // DB menyimpan "MODERATE" untuk NEEDS (Bab 12.3) — kembalikan bentuk
+      // engine "RECOMMENDATION" agar konsisten dengan response submit baru.
+      recommendationConfidence: needsConfidenceFromDb(
+        row.recommendation_confidence,
+      ) ?? row.recommendation_confidence,
       ksmScore: row.ksm_score ?? 0,
       kprScore: row.kpr_score ?? 0,
       kkbScore: row.kkb_score ?? 0,
