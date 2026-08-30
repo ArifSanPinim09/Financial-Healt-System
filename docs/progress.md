@@ -35,7 +35,7 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 - ⚠️ **Temuan + deviasi penting:** function DB `get_next_cs()` (dibuat Modul 2) **rusak** — error 42702 "column reference 'id' is ambiguous". Tak ada channel SQL utk fix (Supabase MCP tak tersedia di sesi ini; project ref app tak ada di org CLI). Solusi: round-robin diimplementasikan **langsung di endpoint** via service-role (lebih terkontrol, tak bergantung function DB). Function DB kini dead code — perlu diperbaiki/dihapus nanti. Race kecil read-then-write dapat diterima utk skala demo (counter tetap monotonic).
 - Verifikasi: typecheck ✓, lint ✓ (0 error), 17 unit test ✓, build ✓. Uji browser end-to-end: submit RATING (skor 98/THE ARCHITECT/KSM PASS, 6 dimensi STRONG) → F12 loading → result render (cincin, persona, grid warna, Your Next Move); CTA → tab baru WhatsApp `6281234567892` + pesan personalisasi benar (rotasi lanjut dari counter); **F14** re-enter nomor → "sudah pernah mengisi" → auto-redirect ke result lama (render benar, sesi baru); mobile 390px stack rapi (label panjang tak terpotong). Uji `/api/result` (data benar, tanpa phone, 404) & `/api/cs` (rotasi 3 nomor + wrap-around + counter naik). Data test di-cleanup, counter direset.
 - Referensi PRD: Bab F6, F12, 12.7, 16.3, 20, 22, 23, 24
-- Commit: <hash>
+- Commit: f044a05
 
 ### [2026-08-30] Modul 7 (KSM Gate & Recommendation Engine) — SELESAI
 - KSM Gate & Recommendation Engine (F5) lengkap di `lib/scoring/recommendation.ts` (sudah diimplementasikan sejak Modul 1, diverifikasi & ditandai selesai di modul ini).
