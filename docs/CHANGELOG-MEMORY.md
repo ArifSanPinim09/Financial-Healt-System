@@ -13,7 +13,7 @@ Format entry:
 ---
 
 ## [2026-08-31 09:5x] Pecah baris heading hero landing (request client)
-- Commit: (menyusul)
+- Commit: 6f1b93b
 - Deskripsi: Request client — "Yuk, mulai dari" dipindah ke baris sendiri setelah "finansial?" di heading hero (app/page.tsx). Heading kini 4 baris: "Punya rencana" / "finansial?" / "Yuk, mulai dari" / "mengenal dirimu." (italic accent). Verifikasi: build ✓.
 - File terdampak: app/page.tsx, docs/progress.md, docs/CHANGELOG-MEMORY.md
 
