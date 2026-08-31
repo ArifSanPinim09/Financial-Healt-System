@@ -13,7 +13,7 @@ Format entry:
 ---
 
 ## [2026-08-31 09:4x] Ubah copy hero section landing (request client)
-- Commit: (menyusul)
+- Commit: 9386528
 - Deskripsi: Request client — hero landing diganti: heading "Kenali kondisi finansialmu, temukan langkah berikutnya." → "Punya rencana finansial? Yuk, mulai dari mengenal dirimu."; paragraf → "Ceritakan sedikit tentang kebiasaan, kebutuhan, dan rencana finansialmu. Dalam beberapa menit, temukan insight dan pilihan solusi yang paling relevan untukmu."; trust signals → "+5 menit · 10-14 pertanyaan · Tanpa login"; tambah tombol CTA "Temukan insight-mu →" (primary accent) yang smooth-scroll ke section kartu assessment (#assessments, scroll-smooth di layout). Verifikasi: build ✓.
 - File terdampak: app/page.tsx, app/layout.tsx, docs/progress.md, docs/CHANGELOG-MEMORY.md
 
