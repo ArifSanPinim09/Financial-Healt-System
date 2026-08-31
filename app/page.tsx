@@ -43,8 +43,8 @@ const assessments: Assessment[] = [
 ];
 
 const trustSignals: { icon: LucideIcon; label: string }[] = [
-  { icon: Clock, label: "±5 menit" },
-  { icon: FileQuestion, label: "10–14 pertanyaan" },
+  { icon: Clock, label: "+5 menit" },
+  { icon: FileQuestion, label: "10-14 pertanyaan" },
   { icon: ShieldCheck, label: "Tanpa login" },
 ];
 
@@ -156,27 +156,26 @@ export default function Home() {
 
           <h1 className="mt-5 font-serif text-[2.6rem] leading-[1.06] tracking-[-0.02em] text-ink sm:text-6xl lg:text-[4.25rem]">
             <span className="-mb-[0.12em] block overflow-hidden pb-[0.12em]">
-              <span className="reveal-line ad-2 block">Kenali kondisi</span>
+              <span className="reveal-line ad-2 block">Punya rencana</span>
             </span>
             <span className="-mb-[0.12em] block overflow-hidden pb-[0.12em]">
               <span className="reveal-line ad-3 block">
-                finansialmu, temukan
+                finansial? Yuk, mulai dari
               </span>
             </span>
             <span className="-mb-[0.12em] block overflow-hidden pb-[0.12em]">
               <span className="reveal-line ad-4 block">
                 <em className="font-medium italic text-accent-deep">
-                  langkah berikutnya.
+                  mengenal dirimu.
                 </em>
               </span>
             </span>
           </h1>
 
           <p className="reveal-up ad-4 mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-            Jawab beberapa pertanyaan singkat tentang kebiasaan finansialmu.
-            Hasilnya — gambaran yang jujur tentang kondisi keuanganmu, plus
-            rekomendasi yang paling relevan. Tanpa login, tanpa terasa seperti
-            ujian.
+            Ceritakan sedikit tentang kebiasaan, kebutuhan, dan rencana
+            finansialmu. Dalam beberapa menit, temukan insight dan pilihan
+            solusi yang paling relevan untukmu.
           </p>
 
           <ul className="reveal-up ad-5 mt-8 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-muted">
@@ -191,9 +190,23 @@ export default function Home() {
               </li>
             ))}
           </ul>
+
+          <div className="reveal-up ad-5 mt-8">
+            <a
+              href="#assessments"
+              className="group inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_32px_-16px_rgba(0,31,77,0.55)] transition-colors duration-300 ease-out hover:bg-accent-deep"
+            >
+              Temukan insight-mu
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                aria-hidden
+              />
+            </a>
+          </div>
         </section>
 
         <section
+          id="assessments"
           className="pt-10 pb-16 sm:pt-14 sm:pb-24 md:pb-28"
           aria-label="Pilih assessment"
         >

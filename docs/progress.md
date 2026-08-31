@@ -20,6 +20,15 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-31 09:4x] Perubahan Copy Hero Section (request client) — SELESAI
+- Update hero landing `app/page.tsx` sesuai request client:
+  - Heading: "Kenali kondisi finansialmu, temukan langkah berikutnya." → **"Punya rencana finansial? Yuk, mulai dari mengenal dirimu."** (line-mask reveal 3 baris tetap; "mengenal dirimu." italic accent-deep).
+  - Paragraf: → **"Ceritakan sedikit tentang kebiasaan, kebutuhan, dan rencana finansialmu. Dalam beberapa menit, temukan insight dan pilihan solusi yang paling relevan untukmu."**
+  - Trust signals: `±5 menit` → **`+5 menit`**, `10–14 pertanyaan` → **`10-14 pertanyaan`**, `Tanpa login` tetap.
+  - Tambah CTA **"Temukan insight-mu →"** (tombol primary accent, hover accent-deep) → smooth-scroll ke section kartu assessment (`#assessments`, `scroll-smooth` di `<html>`).
+- Verifikasi: build ✓ (15 route).
+- Commit: (menyusul)
+
 ### [2026-08-31 09:3x] Perubahan Copy Halaman Awal (request client) — SELESAI
 - Update copy landing `app/page.tsx` sesuai request client (hanya halaman awal):
   - Kartu Financial Rating: title `Financial Health Score` → **`Financial Snapshot`**; deskripsi diganti "Kenali Profil Finansialmu. Seberapa siap kamu untuk mewujudkan rencana finansialmu? Jawab beberapa pertanyaan singkat untuk melihat profil finansialmu dan dapatkan insight yang relevan untukmu." Meta `14 pertanyaan · ±5 menit` tetap.

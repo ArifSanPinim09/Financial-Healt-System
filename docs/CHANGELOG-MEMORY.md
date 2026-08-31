@@ -12,6 +12,11 @@ Format entry:
 
 ---
 
+## [2026-08-31 09:4x] Ubah copy hero section landing (request client)
+- Commit: (menyusul)
+- Deskripsi: Request client — hero landing diganti: heading "Kenali kondisi finansialmu, temukan langkah berikutnya." → "Punya rencana finansial? Yuk, mulai dari mengenal dirimu."; paragraf → "Ceritakan sedikit tentang kebiasaan, kebutuhan, dan rencana finansialmu. Dalam beberapa menit, temukan insight dan pilihan solusi yang paling relevan untukmu."; trust signals → "+5 menit · 10-14 pertanyaan · Tanpa login"; tambah tombol CTA "Temukan insight-mu →" (primary accent) yang smooth-scroll ke section kartu assessment (#assessments, scroll-smooth di layout). Verifikasi: build ✓.
+- File terdampak: app/page.tsx, app/layout.tsx, docs/progress.md, docs/CHANGELOG-MEMORY.md
+
 ## [2026-08-31 09:3x] Ubah copy halaman awal (request client)
 - Commit: cdbcd31
 - Deskripsi: Request client — copy 2 kartu assessment di landing (halaman awal) diganti: Financial Rating: title "Financial Health Score"→"Financial Snapshot", deskripsi→"Kenali Profil Finansialmu. Seberapa siap kamu untuk mewujudkan rencana finansialmu? Jawab beberapa pertanyaan singkat untuk melihat profil finansialmu dan dapatkan insight yang relevan untukmu." (meta 14 pertanyaan ±5 menit tetap). Financial Needs: title "Kebutuhan Kredit"→"Apa yang Ingin Kamu Wujudkan?", deskripsi→"Setiap rencana punya kebutuhan yang berbeda. Ceritakan rencana dan kebutuhanmu, lalu temukan solusi pembiayaan yang paling sesuai". Nama lama di halaman lain (quiz/result/admin) tidak diubah — request hanya halaman awal. Verifikasi: build ✓.
