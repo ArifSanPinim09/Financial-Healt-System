@@ -159,12 +159,13 @@ export default function Home() {
               <span className="reveal-line ad-2 block">Punya rencana</span>
             </span>
             <span className="-mb-[0.12em] block overflow-hidden pb-[0.12em]">
-              <span className="reveal-line ad-3 block">
-                finansial? Yuk, mulai dari
-              </span>
+              <span className="reveal-line ad-3 block">finansial?</span>
             </span>
             <span className="-mb-[0.12em] block overflow-hidden pb-[0.12em]">
-              <span className="reveal-line ad-4 block">
+              <span className="reveal-line ad-4 block">Yuk, mulai dari</span>
+            </span>
+            <span className="-mb-[0.12em] block overflow-hidden pb-[0.12em]">
+              <span className="reveal-line ad-5 block">
                 <em className="font-medium italic text-accent-deep">
                   mengenal dirimu.
                 </em>

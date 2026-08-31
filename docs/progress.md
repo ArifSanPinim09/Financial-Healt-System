@@ -20,6 +20,11 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-31 09:5x] Penyesuaian Baris Heading Hero (request client) — SELESAI
+- Heading hero jadi 4 baris: "Punya rencana" / "finansial?" / "Yuk, mulai dari" / "mengenal dirimu." — "Yuk, mulai dari" dipindah ke baris sendiri setelah "finansial?".
+- Verifikasi: build ✓.
+- Commit: (menyusul)
+
 ### [2026-08-31 09:4x] Perubahan Copy Hero Section (request client) — SELESAI
 - Update hero landing `app/page.tsx` sesuai request client:
   - Heading: "Kenali kondisi finansialmu, temukan langkah berikutnya." → **"Punya rencana finansial? Yuk, mulai dari mengenal dirimu."** (line-mask reveal 3 baris tetap; "mengenal dirimu." italic accent-deep).

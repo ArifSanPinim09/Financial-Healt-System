@@ -12,6 +12,11 @@ Format entry:
 
 ---
 
+## [2026-08-31 09:5x] Pecah baris heading hero landing (request client)
+- Commit: (menyusul)
+- Deskripsi: Request client — "Yuk, mulai dari" dipindah ke baris sendiri setelah "finansial?" di heading hero (app/page.tsx). Heading kini 4 baris: "Punya rencana" / "finansial?" / "Yuk, mulai dari" / "mengenal dirimu." (italic accent). Verifikasi: build ✓.
+- File terdampak: app/page.tsx, docs/progress.md, docs/CHANGELOG-MEMORY.md
+
 ## [2026-08-31 09:4x] Ubah copy hero section landing (request client)
 - Commit: 9386528
 - Deskripsi: Request client — hero landing diganti: heading "Kenali kondisi finansialmu, temukan langkah berikutnya." → "Punya rencana finansial? Yuk, mulai dari mengenal dirimu."; paragraf → "Ceritakan sedikit tentang kebiasaan, kebutuhan, dan rencana finansialmu. Dalam beberapa menit, temukan insight dan pilihan solusi yang paling relevan untukmu."; trust signals → "+5 menit · 10-14 pertanyaan · Tanpa login"; tambah tombol CTA "Temukan insight-mu →" (primary accent) yang smooth-scroll ke section kartu assessment (#assessments, scroll-smooth di layout). Verifikasi: build ✓.
