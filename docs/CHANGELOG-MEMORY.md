@@ -13,7 +13,7 @@ Format entry:
 ---
 
 ## [2026-08-31 09:27] Ubah warna primary teal/hijau → navy #001F4D (request client)
-- Commit: (menyusul)
+- Commit: fc341b0
 - Deskripsi: Request client — warna primary seluruh web diganti dari teal `#0e7a68` ke navy `#001F4D`. Token di app/globals.css: `--accent` #0e7a68→#001f4d, `--accent-deep` #0a5648→#001432 (hover/active), `--accent-tint` #e5efe9→#e6ecf5 (tint terang). Tidak ada hardcode hijau di komponen (diverifikasi grep hex + Tailwind class); semua komponen pakai token `accent`/`accent-deep`/`accent-tint` via Tailwind v4 `@theme`. Warna status dimensi (Bab 20: strong/good/improve/priority) dan token netral warm sengaja TIDAK diubah (bukan brand color). Kontras baru jauh di atas WCAG AA (≈15.9:1 di atas card). Verifikasi: build ✓.
 - File terdampak: app/globals.css, docs/progress.md, docs/CHANGELOG-MEMORY.md
 
