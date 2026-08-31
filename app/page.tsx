@@ -25,9 +25,9 @@ const assessments: Assessment[] = [
     index: "01",
     icon: Gauge,
     kicker: "Financial Rating",
-    title: "Financial Health Score",
+    title: "Financial Snapshot",
     description:
-      "Ukur kesehatan finansialmu di 6 dimensi. Dapatkan skor 0–100, persona, dan rekomendasi langkah berikutnya.",
+      "Kenali Profil Finansialmu. Seberapa siap kamu untuk mewujudkan rencana finansialmu? Jawab beberapa pertanyaan singkat untuk melihat profil finansialmu dan dapatkan insight yang relevan untukmu.",
     meta: ["14 pertanyaan", "±5 menit"],
   },
   {
@@ -35,9 +35,9 @@ const assessments: Assessment[] = [
     index: "02",
     icon: Compass,
     kicker: "Financial Needs",
-    title: "Kebutuhan Kredit",
+    title: "Apa yang Ingin Kamu Wujudkan?",
     description:
-      "Jawab 10 pertanyaan tentang kebutuhanmu, lalu temukan produk kredit yang paling relevan — KSM, KPR, atau KKB.",
+      "Setiap rencana punya kebutuhan yang berbeda. Ceritakan rencana dan kebutuhanmu, lalu temukan solusi pembiayaan yang paling sesuai",
     meta: ["10 pertanyaan", "±3 menit"],
   },
 ];

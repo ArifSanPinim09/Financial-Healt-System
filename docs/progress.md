@@ -20,6 +20,14 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-31 09:3x] Perubahan Copy Halaman Awal (request client) — SELESAI
+- Update copy landing `app/page.tsx` sesuai request client (hanya halaman awal):
+  - Kartu Financial Rating: title `Financial Health Score` → **`Financial Snapshot`**; deskripsi diganti "Kenali Profil Finansialmu. Seberapa siap kamu untuk mewujudkan rencana finansialmu? Jawab beberapa pertanyaan singkat untuk melihat profil finansialmu dan dapatkan insight yang relevan untukmu." Meta `14 pertanyaan · ±5 menit` tetap.
+  - Kartu Financial Needs: title `Kebutuhan Kredit` → **`Apa yang Ingin Kamu Wujudkan?`**; deskripsi diganti "Setiap rencana punya kebutuhan yang berbeda. Ceritakan rencana dan kebutuhanmu, lalu temukan solusi pembiayaan yang paling sesuai" (tanpa titik akhir, sesuai teks request). Meta tetap.
+- Nama lama "Financial Health Score"/"Kebutuhan Kredit" di halaman lain (quiz, result, admin) sengaja TIDAK diubah — request hanya "Di halaman Awal".
+- Verifikasi: build ✓ (15 route).
+- Commit: (menyusul)
+
 ### [2026-08-31 09:27] Perubahan Warna Primary (request client) — SELESAI
 - Ganti warna primary seluruh web dari teal/hijau (`#0e7a68`) ke navy **`#001F4D`** sesuai request client.
 - Semua warna primary terpusat di token `app/globals.css` (tidak ada hardcode hijau di komponen — diverifikasi via grep hex + class Tailwind):

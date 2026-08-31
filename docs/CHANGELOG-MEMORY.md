@@ -12,6 +12,11 @@ Format entry:
 
 ---
 
+## [2026-08-31 09:3x] Ubah copy halaman awal (request client)
+- Commit: (menyusul)
+- Deskripsi: Request client — copy 2 kartu assessment di landing (halaman awal) diganti: Financial Rating: title "Financial Health Score"→"Financial Snapshot", deskripsi→"Kenali Profil Finansialmu. Seberapa siap kamu untuk mewujudkan rencana finansialmu? Jawab beberapa pertanyaan singkat untuk melihat profil finansialmu dan dapatkan insight yang relevan untukmu." (meta 14 pertanyaan ±5 menit tetap). Financial Needs: title "Kebutuhan Kredit"→"Apa yang Ingin Kamu Wujudkan?", deskripsi→"Setiap rencana punya kebutuhan yang berbeda. Ceritakan rencana dan kebutuhanmu, lalu temukan solusi pembiayaan yang paling sesuai". Nama lama di halaman lain (quiz/result/admin) tidak diubah — request hanya halaman awal. Verifikasi: build ✓.
+- File terdampak: app/page.tsx, docs/progress.md, docs/CHANGELOG-MEMORY.md
+
 ## [2026-08-31 09:27] Ubah warna primary teal/hijau → navy #001F4D (request client)
 - Commit: fc341b0
 - Deskripsi: Request client — warna primary seluruh web diganti dari teal `#0e7a68` ke navy `#001F4D`. Token di app/globals.css: `--accent` #0e7a68→#001f4d, `--accent-deep` #0a5648→#001432 (hover/active), `--accent-tint` #e5efe9→#e6ecf5 (tint terang). Tidak ada hardcode hijau di komponen (diverifikasi grep hex + Tailwind class); semua komponen pakai token `accent`/`accent-deep`/`accent-tint` via Tailwind v4 `@theme`. Warna status dimensi (Bab 20: strong/good/improve/priority) dan token netral warm sengaja TIDAK diubah (bukan brand color). Kontras baru jauh di atas WCAG AA (≈15.9:1 di atas card). Verifikasi: build ✓.
