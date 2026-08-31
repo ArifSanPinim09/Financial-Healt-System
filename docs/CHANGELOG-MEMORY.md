@@ -12,6 +12,11 @@ Format entry:
 
 ---
 
+## [2026-08-31 09:27] Ubah warna primary teal/hijau → navy #001F4D (request client)
+- Commit: (menyusul)
+- Deskripsi: Request client — warna primary seluruh web diganti dari teal `#0e7a68` ke navy `#001F4D`. Token di app/globals.css: `--accent` #0e7a68→#001f4d, `--accent-deep` #0a5648→#001432 (hover/active), `--accent-tint` #e5efe9→#e6ecf5 (tint terang). Tidak ada hardcode hijau di komponen (diverifikasi grep hex + Tailwind class); semua komponen pakai token `accent`/`accent-deep`/`accent-tint` via Tailwind v4 `@theme`. Warna status dimensi (Bab 20: strong/good/improve/priority) dan token netral warm sengaja TIDAK diubah (bukan brand color). Kontras baru jauh di atas WCAG AA (≈15.9:1 di atas card). Verifikasi: build ✓.
+- File terdampak: app/globals.css, docs/progress.md, docs/CHANGELOG-MEMORY.md
+
 ## [2026-08-30] Modul 16 (Responsive & Accessibility Pass) — SELESAI
 - Commit: (menyusul)
 - Deskripsi: Audit & perbaikan aksesibilitas (Bab 19/20/21). Kontras WCAG AA: `--good` #4a8b3f→#2f6b28 (3.63→5.65), `--improve` #9a6b0e→#7a5206 (4.02→5.93), `--error-tint` #f9ece8→#f7e4de (error-on-tint 4.94→4.64), tombol "Coba lagi" outline error → `error-deep` (6.46), semua caption `muted/80`→`muted/90` (4.61), `/100` & index kartu landing ikut dinaikkan. Dialog a11y: helper baru `lib/utils/focus-trap.ts` (fokus trap + restore ke elemen pemicu) dipasang di ConfirmModal & FilterSheet; FilterSheet dapat `aria-labelledby` + backdrop `tabIndex=-1`. Toast: `aria-live=polite aria-atomic` + tombol tutup lebih besar. Badge filter mobile: label menyebut jumlah aktif. Result RATING: eyebrow jadi `<h1>` (fix `page-has-heading-one`); NEEDS tetap `<p>` (h1 = "KSM atau KPR"). Verifikasi: 40 unit test, typecheck/lint/build ✓, **axe-core 0 violation** di semua halaman (landing, quiz RATING/NEEDS, result RATING/NEEDS, dashboard, login+error, detail view/edit, modal & sheet), browser E2E keyboard quiz (radio asli + Enter + Kembali pertahankan jawaban), fokus trap filter sheet & modal hapus (Escape tutup + fokus balik), login/logout.

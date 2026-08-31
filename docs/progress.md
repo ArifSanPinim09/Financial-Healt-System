@@ -20,6 +20,17 @@ Status keseluruhan: 🔴 Belum mulai / 🟡 Sedang berjalan / 🟢 Selesai
 | QA — Acceptance Criteria AC1-AC12 | 🔴 | - |
 
 ## Log Detail
+### [2026-08-31 09:27] Perubahan Warna Primary (request client) — SELESAI
+- Ganti warna primary seluruh web dari teal/hijau (`#0e7a68`) ke navy **`#001F4D`** sesuai request client.
+- Semua warna primary terpusat di token `app/globals.css` (tidak ada hardcode hijau di komponen — diverifikasi via grep hex + class Tailwind):
+  - `--accent` `#0e7a68` → `#001f4d`
+  - `--accent-deep` `#0a5648` → `#001432` (varian hover/active, tetap darker)
+  - `--accent-tint` `#e5efe9` → `#e6ecf5` (tint terang untuk background aksen)
+- Semantik tetap: `--strong`/`--good`/`--improve`/`--priority` (warna status dimensi, Bab 20) **tidak** diubah — itu warna data, bukan brand. Token netral warm (paper/ink/muted/line) juga dibiarkan — navy di atas cream tetap harmonis.
+- Kontras: `#001f4d` di atas `--card` (putih) ≈ 15.9:1, di atas `--accent-tint` baru ≈ 13.5:1 — jauh di atas AA 4.5:1 (lebih baik dari teal lama).
+- Verifikasi: build ✓ (15 route).
+- Commit: (menyusul)
+
 ### [2026-08-30] Modul 16 (Responsive & Accessibility Pass) — SELESAI
 - **Audit kontras WCAG AA** (Bab 21) — hitung rasio semua token via script (relative luminance), lalu perbaiki yang gagal 4.5:1 untuk teks normal:
   - Token status dimensi: `--good` `#4a8b3f→#2f6b28` (3.63→**5.65** di atas `good-tint`), `--improve` `#9a6b0e→#7a5206` (4.02→**5.93** di atas `improve-tint`). `strong` (5.52) & `priority` (4.94) sudah lolos.
